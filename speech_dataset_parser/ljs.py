@@ -12,7 +12,7 @@ from speech_dataset_parser.language import Language
 from speech_dataset_parser.utils import read_lines
 
 
-def download(dir_path: str):
+def download(dir_path: str) -> None:
   print("LJSpeech is not downloaded yet.")
   print("Starting download...")
   os.makedirs(dir_path, exist_ok=False)

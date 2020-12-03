@@ -17,7 +17,7 @@ from speech_dataset_parser.utils import (get_basename, get_filepaths,
 SPEAKERS_TXT = "SPEAKERS.txt"
 
 
-def download(dir_path: str):
+def download(dir_path: str) -> None:
   pass
 
 

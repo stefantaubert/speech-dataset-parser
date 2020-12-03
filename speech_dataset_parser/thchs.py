@@ -20,7 +20,7 @@ ACCENTS = {
 }
 
 
-def download(dir_path: str):
+def download(dir_path: str) -> None:
   download_tar("http://data.cslt.org/thchs30/zip/wav.tgz", dir_path)
   download_tar("http://data.cslt.org/thchs30/zip/doc.tgz", dir_path)
 

@@ -12,7 +12,7 @@ from speech_dataset_parser.utils import (get_basename, get_filepaths,
 README_FILE = "README.md"
 
 
-def download(dir_path: str):
+def download(dir_path: str) -> None:
   pass
 
 

@@ -15,7 +15,7 @@ from speech_dataset_parser.utils import (create_parent_folder, download_tar,
 # Warning: Script is not good as thchs normal.
 
 
-def download(dir_path: str):
+def download(dir_path: str) -> None:
   download_url_kaldi = "http://www.openslr.org/resources/18/data_thchs30.tgz"
   tmp_dir = tempfile.mkdtemp()
   download_tar(download_url_kaldi, tmp_dir)

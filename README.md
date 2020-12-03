@@ -18,5 +18,5 @@ pipenv install --dev
 In the destination project run:
 
 ```sh
-pipenv install -e git+https://github.com/stefantaubert/speech-dataset-parser.git
+pipenv install -e git+https://github.com/stefantaubert/speech-dataset-parser.git@master#egg=speech_dataset_parser
 ```
