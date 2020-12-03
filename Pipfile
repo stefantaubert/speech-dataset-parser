@@ -9,12 +9,12 @@ isort = "*"
 pycodestyle = "*"
 pylint = "*"
 rope = "*"
+pipenv-setup = "*"
 
 [packages]
 tqdm = "*"
 wget = "*"
 pandas = "*"
-
 
 [requires]
 python_version = "3.9"
