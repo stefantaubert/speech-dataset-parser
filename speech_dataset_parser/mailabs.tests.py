@@ -7,7 +7,7 @@ class UnitTests(unittest.TestCase):
   def test_all_utterances_are_included(self):
     dest = '/home/mi/data/mailabs'
     res = parse(dest)
-    self.assertEqual(len(res), 188)
+    self.assertEqual(len(res), 314990)
 
 
 if __name__ == '__main__':

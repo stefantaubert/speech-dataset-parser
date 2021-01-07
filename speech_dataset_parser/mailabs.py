@@ -93,6 +93,8 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
       if not os.path.isfile(wav_path):
         print(f"file does not exist: {wav_path}")
         # These files do not exist:
+        # en_UK/by_book/female/elizabeth_klett/jane_eyre/wavs/jane_eyre_27_f000439.wav
+        # en_UK/by_book/female/elizabeth_klett/jane_eyre/wavs/jane_eyre_27_f000441.wav
         # en_US/by_book/female/judy_bieber/the_master_key/wavs/the_master_key_05_f000135.wav
         # en_US/by_book/female/mary_ann/midnight_passenger/wavs/midnight_passenger_05_f000269.wav
         # en_US/by_book/female/mary_ann/northandsouth/wavs/northandsouth_40_f000069.wav
