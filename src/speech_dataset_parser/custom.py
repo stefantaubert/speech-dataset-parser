@@ -48,7 +48,7 @@ def sort_entries_key(entry: PreData) -> Tuple[str, str]:
   return entry.speaker_name, entry.wav_path
 
 
-def parse(dir_path: str, logger: Logger) -> PreDataList:
+def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
   if not os.path.exists(dir_path):
     ex = ValueError(f"Directory not found: {dir_path}")
     logger.error("", exc_info=ex)
