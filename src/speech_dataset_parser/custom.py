@@ -10,7 +10,7 @@ from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
 from speech_dataset_parser.utils import get_subfolders, load_df
 
-OATA_CSV_NAME = "data.csv"
+DATA_CSV_NAME = "data.csv"
 AUDIO_FOLDER_NAME = "audio"
 
 
@@ -48,7 +48,7 @@ def sort_entries_key(entry: PreData) -> Tuple[str, str]:
   return entry.speaker_name, entry.wav_path
 
 
-def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
+def parse(dir_path: str, logger: Logger) -> PreDataList:
   if not os.path.exists(dir_path):
     ex = ValueError(f"Directory not found: {dir_path}")
     logger.error("", exc_info=ex)
@@ -60,7 +60,7 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
 
   subfolders = get_subfolders(dir_path)
   for subfolder in tqdm(subfolders):
-    data_path = os.path.join(subfolder, OATA_CSV_NAME)
+    data_path = os.path.join(subfolder, DATA_CSV_NAME)
     entries = Entries.load(data_path)
     for entry in entries.items():
       gender = Gender.MALE if entry.gender == "m" else Gender.FEMALE
