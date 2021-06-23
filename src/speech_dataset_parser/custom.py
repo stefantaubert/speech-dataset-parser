@@ -7,7 +7,8 @@ from tqdm.std import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
-from speech_dataset_parser.language import Language
+from speech_dataset_parser.language import (get_lang_from_str,
+                                            is_lang_from_str_supported)
 from speech_dataset_parser.utils import get_subfolders, load_df
 
 DATA_CSV_NAME = "data.csv"
@@ -23,6 +24,7 @@ class Entry():
   speaker: str
   gender: str
   accent: str
+  lang: str
 
 
 class Entries(list):
@@ -55,7 +57,6 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
     raise ex
 
   result = PreDataList()
-  lang = Language.ENG
   tmp: List[Tuple[Tuple, PreDataList]] = []
 
   subfolders = get_subfolders(dir_path)
@@ -63,14 +64,17 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
     data_path = os.path.join(subfolder, DATA_CSV_NAME)
     entries = Entries.load(data_path)
     for entry in entries.items():
+      if not is_lang_from_str_supported(entry.lang):
+        logger.warning(
+          f"Entry {entry.entry_id} couldn't be parsed because it contains an unknown language {entry.lang}!")
+        continue
       gender = Gender.MALE if entry.gender == "m" else Gender.FEMALE
-
       wav_path = os.path.join(subfolder, AUDIO_FOLDER_NAME, entry.wav)
       data = PreData(
         name=entry.entry_id,
         speaker_name=entry.speaker,
         speaker_accent=entry.accent,
-        lang=lang,
+        lang=get_lang_from_str(entry.lang),
         wav_path=wav_path,
         gender=gender,
         text=entry.text,

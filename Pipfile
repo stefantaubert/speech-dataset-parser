@@ -10,7 +10,7 @@ pycodestyle = "*"
 pylint = "*"
 rope = "*"
 pipenv-setup = "*"
-speech-dataset-parser = {editabel = true, path = "."}
+speech-dataset-parser = {editable = true, path = "."}
 
 [packages]
 tqdm = "*"
