@@ -65,7 +65,7 @@ def parse(dir_path: Path) -> PreDataList:
         text_format=text_format,
         wav_path=wav,
         speaker_gender=gender,
-        speaker_language=lang,
+        text_language=lang,
       )
 
       entries.append(entry)

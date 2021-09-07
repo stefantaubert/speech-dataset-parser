@@ -12,10 +12,10 @@ class PreData:
   identifier: str
   text: str
   text_format: TextFormat
+  text_language: Language
   speaker_name: str
   speaker_accent: str
   speaker_gender: Gender
-  speaker_language: Language
   wav_path: Path
 
 

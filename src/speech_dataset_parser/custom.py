@@ -78,7 +78,7 @@ def parse(dir_path: Path) -> PreDataList:
         identifier=entry.entry_id,
         speaker_name=entry.speaker,
         speaker_accent=entry.accent,
-        speaker_language=get_lang_from_str(entry.lang),
+        text_language=get_lang_from_str(entry.lang),
         wav_path=wav_path,
         speaker_gender=gender,
         text=entry.text,

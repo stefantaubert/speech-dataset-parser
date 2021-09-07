@@ -90,7 +90,7 @@ def parse(dir_path: Path) -> PreDataList:
         speaker_accent=accent_name,
         wav_path=wav_path,
         speaker_gender=speaker_gender,
-        speaker_language=lang
+        text_language=lang
       )
 
       files.append((entry, (speaker_name_letter, speaker_name_number, nr)))
