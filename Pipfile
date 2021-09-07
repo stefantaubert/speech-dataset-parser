@@ -11,6 +11,7 @@ pylint = "*"
 rope = "*"
 pipenv-setup = "*"
 speech-dataset-parser = {editable = true, path = "."}
+pytest = "*"
 
 [packages]
 tqdm = "*"

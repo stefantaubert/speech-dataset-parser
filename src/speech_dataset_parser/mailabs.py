@@ -2,9 +2,8 @@
 Parses the M-AILABS dataset. It ignores the mix folder because no concrete genders can be assigned so it is useless for TTS.
 """
 
-import os
-from logging import Logger, getLogger
-from os import path
+from logging import getLogger
+from pathlib import Path
 from typing import Dict, Tuple
 
 from tqdm import tqdm
@@ -12,7 +11,8 @@ from tqdm import tqdm
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
-from speech_dataset_parser.utils import get_subfolders, read_lines
+from speech_dataset_parser.utils import (get_basename, get_subfolders,
+                                         read_lines)
 
 LANGUAGES: Dict[str, Language] = {
   "de_DE": Language.GER,
@@ -39,58 +39,56 @@ ACCENTS: Dict[str, str] = {
 }
 
 
-def download(dir_path: str) -> None:
-  pass
-
-
-def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
-  if not os.path.exists(dir_path):
+def parse(dir_path: Path) -> PreDataList:
+  logger = getLogger(__name__)
+  if not dir_path.exists():
     ex = ValueError(f"Directory not found: {dir_path}")
     logger.error("", exc_info=ex)
     raise ex
 
-  data_paths: Tuple[Language, str, Gender, str, str] = []
+  data_paths: Tuple[Language, str, Gender, str, Path] = []
 
   language_dirs = get_subfolders(dir_path)
   for language_dir in language_dirs:
     logger.info(f"Parsing {language_dir}...")
-    male_dir = path.join(language_dir, "by_book", "male")
-    female_dir = path.join(language_dir, "by_book", "female")
-    language_name = path.basename(language_dir)
+    male_dir = language_dir / "by_book" / "male"
+    female_dir = language_dir / "by_book" / "female"
+    language_name = get_basename(language_dir)
     lang = LANGUAGES[language_name]
     accent = ACCENTS[language_name]
 
-    if os.path.exists(male_dir):
+    if male_dir.exists():
       speaker_paths = get_subfolders(male_dir)
       for speaker_path in speaker_paths:
-        speaker_name = path.basename(speaker_path)
+        speaker_name = get_basename(speaker_path)
         book_paths = get_subfolders(speaker_path)
         for book_path in book_paths:
           data_paths.append((lang, accent, Gender.MALE, speaker_name, book_path))
 
-    if os.path.exists(female_dir):
+    if female_dir.exists():
       speaker_paths = get_subfolders(female_dir)
       for speaker_path in speaker_paths:
-        speaker_name = path.basename(speaker_path)
+        speaker_name = get_basename(speaker_path)
         book_paths = get_subfolders(speaker_path)
         for book_path in book_paths:
           data_paths.append((lang, accent, Gender.FEMALE, speaker_name, book_path))
 
   result = PreDataList()
 
+  book_path: Path
   for lang, accent_name, gender, speaker_name, book_path in tqdm(data_paths):
-    metadata_path = os.path.join(book_path, "metadata.csv")
-    wav_dirpath = os.path.join(book_path, 'wavs')
+    metadata_path = book_path / "metadata.csv"
+    wav_dirpath = book_path / 'wavs'
     lines = read_lines(metadata_path)
     for line in lines:
       parts = line.split('|')
       basename = parts[0]
       # parts[1] contains years, in parts[2] the years are written out
       # ex. ['LJ001-0045', '1469, 1470;', 'fourteen sixty-nine, fourteen seventy;']
-      wav_path = os.path.join(wav_dirpath, f'{basename}.wav')
+      wav_path = wav_dirpath / f'{basename}.wav'
       text = parts[2]
 
-      if not os.path.isfile(wav_path):
+      if not wav_path.is_file():
         print(f"file does not exist: {wav_path}")
         # These files do not exist:
         # en_UK/by_book/female/elizabeth_klett/jane_eyre/wavs/jane_eyre_27_f000439.wav
@@ -101,13 +99,13 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
         continue
 
       entry = PreData(
-        name=basename,
+        identifier=basename,
         speaker_name=speaker_name,
         speaker_accent=accent_name,
         text=text,
         wav_path=wav_path,
-        gender=gender,
-        lang=lang
+        speaker_gender=gender,
+        speaker_language=lang
       )
 
       result.append(entry)
@@ -118,5 +116,5 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
   return result
 
 
-def sort_ds(entry: PreData) -> str:
-  return entry.speaker_name, entry.name
+def sort_ds(entry: PreData) -> Tuple[str, str]:
+  return entry.speaker_name, entry.identifier

@@ -132,3 +132,4 @@ dmypy.json
 *playground.py
 *.debug.py
 out/
+debug/

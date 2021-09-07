@@ -1,5 +1,6 @@
-import os
-from logging import Logger, getLogger
+from logging import getLogger
+from pathlib import Path
+from typing import Tuple
 
 from tqdm import tqdm
 
@@ -12,22 +13,21 @@ from speech_dataset_parser.utils import (get_basename, get_filepaths,
 # found some invalid text at:
 # train-clean-360/8635/295759/8635_295759_000008_000001.original.txt
 # "With them were White Thun-der, who had charge of the "speech-belts," and Sil-ver Heels, who was swift of foot."
-
+# and also some text which contains spaces between words
+# e.g. train-clean-360/8635/295756/8635_295756_000030_000000.original.txt
+# "Law rence soon tired of this place..."
 
 SPEAKERS_TXT = "SPEAKERS.txt"
 
 
-def download(dir_path: str) -> None:
-  pass
-
-
-def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
-  if not os.path.exists(dir_path):
+def parse(dir_path: Path) -> PreDataList:
+  logger = getLogger(__name__)
+  if not dir_path.exists():
     ex = ValueError(f"Directory not found: {dir_path}")
     logger.error("", exc_info=ex)
     raise ex
 
-  speakers_path = os.path.join(dir_path, SPEAKERS_TXT)
+  speakers_path = dir_path / SPEAKERS_TXT
   speakers = read_lines(speakers_path)
   speakers = speakers[12:]
   speakers_dict = {}
@@ -51,22 +51,22 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
 
       for chapter_folder in get_subfolders(speaker_folder):
         files = get_filepaths(chapter_folder)
-        wavs = [x for x in files if x.endswith(".wav")]
-        texts = [x for x in files if x.endswith(".normalized.txt")]
-        assert len(wavs) == len(texts)
+        wav_paths = [file for file in files if str(file).endswith(".wav")]
+        text_paths = [file for file in files if str(file).endswith(".normalized.txt")]
+        assert len(wav_paths) == len(text_paths)
 
-        for wav_file, text_file in zip(wavs, texts):
+        for wav_file, text_file in zip(wav_paths, text_paths):
           assert get_basename(wav_file) == get_basename(text_file)[:-len(".normalized")]
           text_en = read_text(text_file)
 
           entry = PreData(
-            name=get_basename(wav_file),
+            identifier=get_basename(wav_file),
             speaker_name=speaker_name,
             speaker_accent=accent_name,
             text=text_en,
             wav_path=wav_file,
-            gender=gender,
-            lang=lang
+            speaker_gender=gender,
+            speaker_language=lang
           )
 
           entries.append(entry)
@@ -77,5 +77,5 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
   return entries
 
 
-def sort_libri(entry: PreData) -> str:
-  return entry.speaker_name, entry.name
+def sort_libri(entry: PreData) -> Tuple[str, str]:
+  return entry.speaker_name, entry.identifier

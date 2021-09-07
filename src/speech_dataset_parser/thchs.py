@@ -1,5 +1,5 @@
-import os
-from logging import Logger, getLogger
+from logging import getLogger
+from pathlib import Path
 from typing import List, Tuple
 
 from tqdm import tqdm
@@ -20,21 +20,22 @@ ACCENTS = {
 }
 
 
-def download(dir_path: str) -> None:
+def download(dir_path: Path) -> None:
   download_tar("http://data.cslt.org/thchs30/zip/wav.tgz", dir_path)
   download_tar("http://data.cslt.org/thchs30/zip/doc.tgz", dir_path)
 
 
-def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
-  if not os.path.exists(dir_path):
+def parse(dir_path: Path) -> PreDataList:
+  logger = getLogger(__name__)
+  if not dir_path.exists():
     ex = ValueError(f"Directory not found: {dir_path}")
     logger.error("", exc_info=ex)
     raise ex
 
-  train_words = os.path.join(dir_path, 'doc/trans/train.word.txt')
-  test_words = os.path.join(dir_path, 'doc/trans/test.word.txt')
-  train_wavs = os.path.join(dir_path, 'wav/train/')
-  test_wavs = os.path.join(dir_path, 'wav/test/')
+  train_words = dir_path / 'doc/trans/train.word.txt'
+  test_words = dir_path / 'doc/trans/test.word.txt'
+  train_wavs = dir_path / 'wav/train/'
+  test_wavs = dir_path / 'wav/test/'
 
   parse_paths = [
     (train_words, train_wavs),
@@ -48,6 +49,7 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
   for words_path, wavs_dir in parse_paths:
     lines = read_lines(words_path)
 
+    x: str
     for x in tqdm(lines):
       pos = x.find(' ')
       name, chinese = x[:pos], x[pos + 1:]
@@ -57,12 +59,10 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
       nr = int(nr)
       speaker_name_letter = speaker_name[0]
       speaker_name_number = int(speaker_name[1:])
-      wav_path = os.path.join(wavs_dir, speaker_name, name + '.wav')
-      exists = os.path.exists(wav_path)
-      if not exists:
-        wav_path = os.path.join(wavs_dir, speaker_name, name + '.WAV')
-      exists = os.path.exists(wav_path)
-      if not exists:
+      wav_path = wavs_dir / speaker_name / f"{name}.wav"
+      if not wav_path.exists():
+        wav_path = wavs_dir / speaker_name / f"{name}.WAV"
+      if not wav_path.exists():
         logger.info(f"Found no wav file: {wav_path}")
         continue
 
@@ -81,13 +81,13 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
         accent_name = ACCENTS[speaker_name]
 
       entry = PreData(
-        name=name,
+        identifier=name,
         speaker_name=speaker_name,
         text=chinese,
         speaker_accent=accent_name,
         wav_path=wav_path,
-        gender=speaker_gender,
-        lang=lang
+        speaker_gender=speaker_gender,
+        speaker_language=lang
       )
 
       files.append((entry, (speaker_name_letter, speaker_name_number, nr)))

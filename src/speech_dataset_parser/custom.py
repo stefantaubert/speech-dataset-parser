@@ -1,9 +1,9 @@
-import os
 from dataclasses import dataclass
-from logging import Logger, getLogger
+from logging import getLogger
+from pathlib import Path
 from typing import List, Tuple
 
-from tqdm.std import tqdm
+from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
@@ -32,7 +32,7 @@ class Entries(list):
     return self
 
   @classmethod
-  def load(cls, file_path: str):
+  def load(cls, file_path: Path):
     data = load_df(file_path, sep="\t")
     data_loaded: List[Entry] = [Entry(*xi) for xi in data.values]
     res = cls(data_loaded)
@@ -46,12 +46,13 @@ class Entries(list):
       entry.accent = str(entry.accent)
 
 
-def sort_entries_key(entry: PreData) -> Tuple[str, str]:
+def sort_entries_key(entry: PreData) -> Tuple[str, Path]:
   return entry.speaker_name, entry.wav_path
 
 
-def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
-  if not os.path.exists(dir_path):
+def parse(dir_path: Path) -> PreDataList:
+  logger = getLogger(__name__)
+  if not dir_path.exists():
     ex = ValueError(f"Directory not found: {dir_path}")
     logger.error("", exc_info=ex)
     raise ex
@@ -60,8 +61,9 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
   tmp: List[Tuple[Tuple, PreDataList]] = []
 
   subfolders = get_subfolders(dir_path)
+  subfolder: Path
   for subfolder in tqdm(subfolders):
-    data_path = os.path.join(subfolder, DATA_CSV_NAME)
+    data_path = subfolder / DATA_CSV_NAME
     entries = Entries.load(data_path)
     for entry in entries.items():
       if not is_lang_from_str_supported(entry.lang):
@@ -69,14 +71,14 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
           f"Entry {entry.entry_id} couldn't be parsed because it contains an unknown language {entry.lang}!")
         continue
       gender = Gender.MALE if entry.gender == "m" else Gender.FEMALE
-      wav_path = os.path.join(subfolder, AUDIO_FOLDER_NAME, entry.wav)
+      wav_path = subfolder / AUDIO_FOLDER_NAME / entry.wav
       data = PreData(
-        name=entry.entry_id,
+        identifier=entry.entry_id,
         speaker_name=entry.speaker,
         speaker_accent=entry.accent,
-        lang=get_lang_from_str(entry.lang),
+        speaker_language=get_lang_from_str(entry.lang),
         wav_path=wav_path,
-        gender=gender,
+        speaker_gender=gender,
         text=entry.text,
       )
       sorting_keys = entry.speaker, subfolder, entry.entry_id

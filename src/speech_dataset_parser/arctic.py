@@ -1,5 +1,6 @@
-import os
-from logging import Logger, getLogger
+from logging import getLogger
+from pathlib import Path
+from typing import Tuple
 
 from tqdm import tqdm
 
@@ -12,17 +13,14 @@ from speech_dataset_parser.utils import (get_basename, get_filepaths,
 README_FILE = "README.md"
 
 
-def download(dir_path: str) -> None:
-  pass
-
-
-def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
-  if not os.path.exists(dir_path):
+def parse(dir_path: Path) -> PreDataList:
+  logger = getLogger(__name__)
+  if not dir_path.exists():
     ex = ValueError(f"Directory not found: {dir_path}")
     logger.error("", exc_info=ex)
     raise ex
 
-  readme_path = os.path.join(dir_path, README_FILE)
+  readme_path = dir_path / README_FILE
   readme = read_lines(readme_path)
   readme = readme[34:58]
   speakers_dict = {}
@@ -41,11 +39,11 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
     if speaker_name not in speakers_dict.keys():
       logger.info(f"Skipping {speaker_name}")
       continue
-    wavs = get_filepaths(os.path.join(speaker_folder, "wav"))
-    # only 150, they do not contain good IPA
-    annotations = get_filepaths(os.path.join(speaker_folder, "annotation"))
-    textgrids = get_filepaths(os.path.join(speaker_folder, "textgrid"))
-    transcripts = get_filepaths(os.path.join(speaker_folder, "transcript"))
+    wavs = get_filepaths(speaker_folder / "wav")
+    # count only 150, they do not contain good IPA
+    annotations = get_filepaths(speaker_folder / "annotation")
+    textgrids = get_filepaths(speaker_folder / "textgrid")
+    transcripts = get_filepaths(speaker_folder / "transcript")
 
     assert len(wavs) == len(textgrids) == len(transcripts)
 
@@ -53,18 +51,18 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
     speaker_gender, speaker_accent = speakers_dict[speaker_name]
     gender = Gender.MALE if speaker_gender == "M" else Gender.FEMALE
 
-    for wav, textgrid, transcript in zip(wavs, textgrids, transcripts):
+    for wav, transcript in zip(wavs, transcripts):
       text_en = read_text(transcript)
       text_en = f"{text_en}."
 
       entry = PreData(
-        name=get_basename(wav),
+        identifier=get_basename(wav),
         speaker_name=speaker_name,
         speaker_accent=speaker_accent,
         text=text_en,
         wav_path=wav,
-        gender=gender,
-        lang=lang
+        speaker_gender=gender,
+        speaker_language=lang,
       )
 
       entries.append(entry)
@@ -75,5 +73,5 @@ def parse(dir_path: str, logger: Logger = getLogger()) -> PreDataList:
   return entries
 
 
-def sort_arctic(entry: PreData) -> str:
-  return entry.speaker_name, entry.name
+def sort_arctic(entry: PreData) -> Tuple[str, str]:
+  return entry.speaker_name, entry.identifier

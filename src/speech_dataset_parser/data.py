@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List
 
 from speech_dataset_parser.gender import Gender
@@ -7,13 +8,13 @@ from speech_dataset_parser.language import Language
 
 @dataclass()
 class PreData:
-  name: str
+  identifier: str
+  text: str
   speaker_name: str
   speaker_accent: str
-  text: str
-  wav_path: str
-  gender: Gender
-  lang: Language
+  speaker_gender: Gender
+  speaker_language: Language
+  wav_path: Path
 
 
 class PreDataList(list):
