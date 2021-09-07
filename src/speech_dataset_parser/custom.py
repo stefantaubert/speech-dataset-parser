@@ -9,6 +9,7 @@ from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import (get_lang_from_str,
                                             is_lang_from_str_supported)
+from speech_dataset_parser.text_format import TextFormat
 from speech_dataset_parser.utils import get_subfolders, load_df
 
 DATA_CSV_NAME = "data.csv"
@@ -59,6 +60,7 @@ def parse(dir_path: Path) -> PreDataList:
 
   result = PreDataList()
   tmp: List[Tuple[Tuple, PreDataList]] = []
+  text_format = TextFormat.PHONES_IPA
 
   subfolders = get_subfolders(dir_path)
   subfolder: Path
@@ -80,6 +82,7 @@ def parse(dir_path: Path) -> PreDataList:
         wav_path=wav_path,
         speaker_gender=gender,
         text=entry.text,
+        text_format=text_format,
       )
       sorting_keys = entry.speaker, subfolder, entry.entry_id
       tmp.append((sorting_keys, data))

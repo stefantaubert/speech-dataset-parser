@@ -10,6 +10,7 @@ from tqdm import tqdm
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
+from speech_dataset_parser.text_format import TextFormat
 from speech_dataset_parser.utils import (create_parent_folder, download_tar,
                                          get_basename, read_lines)
 
@@ -51,6 +52,7 @@ def parse(dir_path: Path) -> PreDataList:
 
   res = PreDataList()
   lang = Language.CHN
+  text_format = TextFormat.GRAPHEMES
   logger.info("Parsing files...")
   wav_file: Path
   sent_file: Path
@@ -71,6 +73,7 @@ def parse(dir_path: Path) -> PreDataList:
       speaker_name=speaker,
       speaker_accent=speaker,
       text=chn,
+      text_format=text_format,
       wav_path=wav_file,
       speaker_gender=Gender.FEMALE,
       speaker_language=lang,

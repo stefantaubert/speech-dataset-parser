@@ -7,6 +7,7 @@ from tqdm import tqdm
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
+from speech_dataset_parser.text_format import TextFormat
 from speech_dataset_parser.utils import download_tar, read_lines
 
 QUESTION_PARTICLE_1 = '吗'
@@ -44,6 +45,7 @@ def parse(dir_path: Path) -> PreDataList:
 
   files: List[Tuple[Tuple[str, int, int], PreData]] = []
   lang = Language.CHN
+  text_format = TextFormat.GRAPHEMES
 
   logger.info("Parsing files...")
   for words_path, wavs_dir in parse_paths:
@@ -84,6 +86,7 @@ def parse(dir_path: Path) -> PreDataList:
         identifier=name,
         speaker_name=speaker_name,
         text=chinese,
+        text_format=text_format,
         speaker_accent=accent_name,
         wav_path=wav_path,
         speaker_gender=speaker_gender,

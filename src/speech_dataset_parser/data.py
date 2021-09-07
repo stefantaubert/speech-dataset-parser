@@ -4,12 +4,14 @@ from typing import List
 
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
+from speech_dataset_parser.text_format import TextFormat
 
 
 @dataclass()
 class PreData:
   identifier: str
   text: str
+  text_format: TextFormat
   speaker_name: str
   speaker_accent: str
   speaker_gender: Gender

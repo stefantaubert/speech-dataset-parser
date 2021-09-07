@@ -2,7 +2,7 @@ from enum import IntEnum
 
 
 class Language(IntEnum):
-  IPA = 0
+  PL = 0
   ENG = 1
   CHN = 2
   GER = 3
@@ -11,33 +11,51 @@ class Language(IntEnum):
   UK = 6
   RU = 7
   FR = 8
-  PL = 9
 
   def __repr__(self):
-    if self == self.IPA:
-      return str("ipa")
     if self == self.ENG:
-      return str("eng")
+      return str("English")
     if self == self.CHN:
-      return str("chn")
+      return str("Chinese")
     if self == self.GER:
-      return str("ger")
+      return str("German")
     if self == self.ES:
-      return str("es")
+      return str("Spanish")
     if self == self.IT:
-      return str("it")
+      return str("Italian")
     if self == self.UK:
-      return str("uk")
+      return str("Ukrainian")
     if self == self.RU:
-      return str("ru")
+      return str("Russian")
     if self == self.FR:
-      return str("fr")
+      return str("French")
     if self == self.PL:
-      return str("pl")
+      return str("Polish")
+    assert False
+
+  def __str__(self):
+    if self == self.ENG:
+      return str("ENG")
+    if self == self.CHN:
+      return str("CHN")
+    if self == self.GER:
+      return str("GER")
+    if self == self.ES:
+      return str("ES")
+    if self == self.IT:
+      return str("IT")
+    if self == self.UK:
+      return str("UK")
+    if self == self.RU:
+      return str("RU")
+    if self == self.FR:
+      return str("FR")
+    if self == self.PL:
+      return str("PL")
     assert False
 
 
-lang_dict = {repr(x): x for x in list(Language)}
+lang_dict = {str(x): x for x in list(Language)}
 
 
 def is_lang_from_str_supported(lang: str) -> bool:
