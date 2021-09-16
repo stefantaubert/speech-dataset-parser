@@ -129,7 +129,5 @@ dmypy.json
 .pyre/
 
 .vscode
-*playground.py
-*.debug.py
 out/
-debug/
+*_debug/
