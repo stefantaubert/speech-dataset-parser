@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Tuple
 
 from general_utils import (get_basename, get_filepaths, get_subfolders,
-                           read_lines, read_text)
+                           read_lines)
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
@@ -59,7 +59,7 @@ def parse(dir_path: Path) -> PreDataList:
 
         for wav_file, text_file in zip(wav_paths, text_paths):
           assert get_basename(wav_file) == get_basename(text_file)[:-len(".normalized")]
-          text_en = read_text(text_file)
+          text_en = text_file.read_text()
 
           entry = PreData(
             identifier=get_basename(wav_file),

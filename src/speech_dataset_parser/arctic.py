@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Tuple
 
 from general_utils import (get_basename, get_filepaths, get_subfolders,
-                           read_lines, read_text)
+                           read_lines)
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
@@ -43,7 +43,7 @@ def parse(dir_path: Path) -> PreDataList:
       continue
     wavs = get_filepaths(speaker_folder / "wav")
     # count only 150, they do not contain good IPA
-    annotations = get_filepaths(speaker_folder / "annotation")
+    # annotations = get_filepaths(speaker_folder / "annotation")
     textgrids = get_filepaths(speaker_folder / "textgrid")
     transcripts = get_filepaths(speaker_folder / "transcript")
 
@@ -54,7 +54,7 @@ def parse(dir_path: Path) -> PreDataList:
     gender = Gender.MALE if speaker_gender == "M" else Gender.FEMALE
 
     for wav, transcript in zip(wavs, transcripts):
-      text_en = read_text(transcript)
+      text_en = transcript.read_text()
       text_en = f"{text_en}."
 
       entry = PreData(
