@@ -4,16 +4,17 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+speech-dataset-parser = {editable = true, path = "."}
 autopep8 = "*"
 isort = "*"
 pycodestyle = "*"
 pylint = "*"
 rope = "*"
 pipenv-setup = "*"
-speech-dataset-parser = {editable = true, path = "."}
 pytest = "*"
 
 [packages]
+general-utils = {editable = true, path = "./../general-utils"}
 tqdm = "*"
 wget = "*"
 pandas = "*"

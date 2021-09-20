@@ -3,6 +3,8 @@ from logging import getLogger
 from pathlib import Path
 from typing import List, Tuple
 
+import pandas as pd
+from general_utils import get_subfolders
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
@@ -10,7 +12,6 @@ from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import (get_lang_from_str,
                                             is_lang_from_str_supported)
 from speech_dataset_parser.text_format import TextFormat
-from speech_dataset_parser.utils import get_subfolders, load_df
 
 DATA_CSV_NAME = "data.csv"
 AUDIO_FOLDER_NAME = "audio"
@@ -34,7 +35,7 @@ class Entries(list):
 
   @classmethod
   def load(cls, file_path: Path):
-    data = load_df(file_path, sep="\t")
+    data = pd.read_csv(file_path, header=None, sep="\t")
     data_loaded: List[Entry] = [Entry(*xi) for xi in data.values]
     res = cls(data_loaded)
     res.load_init()

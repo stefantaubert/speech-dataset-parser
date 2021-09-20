@@ -5,14 +5,14 @@ import tempfile
 from logging import getLogger
 from pathlib import Path
 
+from general_utils import get_basename, read_lines
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
 from speech_dataset_parser.text_format import TextFormat
-from speech_dataset_parser.utils import (create_parent_folder, download_tar,
-                                         get_basename, read_lines)
+from speech_dataset_parser.utils import download_tar
 
 # Warning: Script is not good as thchs normal.
 
@@ -23,7 +23,7 @@ def download(dir_path: Path) -> None:
   download_tar(download_url_kaldi, tmp_dir)
   subfolder_name = "data_thchs30"
   content_dir = tmp_dir / subfolder_name
-  parent = create_parent_folder(dir_path)
+  parent = dir_path.parent.mkdir(parents=True, exist_ok=True)
   dest = parent / subfolder_name
   shutil.move(content_dir, dest)
   os.rename(dest, dir_path)

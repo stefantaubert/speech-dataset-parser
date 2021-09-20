@@ -5,13 +5,13 @@ from logging import getLogger
 from pathlib import Path
 
 import wget
+from general_utils import read_lines
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
 from speech_dataset_parser.text_format import TextFormat
-from speech_dataset_parser.utils import read_lines
 
 
 def download(dir_path: Path) -> None:

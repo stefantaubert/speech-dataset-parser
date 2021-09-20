@@ -2,13 +2,14 @@ from logging import getLogger
 from pathlib import Path
 from typing import List, Tuple
 
+from general_utils import read_lines
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
 from speech_dataset_parser.text_format import TextFormat
-from speech_dataset_parser.utils import download_tar, read_lines
+from speech_dataset_parser.utils import download_tar
 
 QUESTION_PARTICLE_1 = '吗'
 QUESTION_PARTICLE_2 = '呢'

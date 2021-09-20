@@ -2,14 +2,14 @@ from logging import getLogger
 from pathlib import Path
 from typing import Tuple
 
+from general_utils import (get_basename, get_filepaths, get_subfolders,
+                           read_lines, read_text)
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
 from speech_dataset_parser.text_format import TextFormat
-from speech_dataset_parser.utils import (get_basename, get_filepaths,
-                                         get_subfolders, read_lines, read_text)
 
 # found some invalid text at:
 # train-clean-360/8635/295759/8635_295759_000008_000001.original.txt

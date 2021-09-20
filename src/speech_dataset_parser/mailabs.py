@@ -6,14 +6,13 @@ from logging import getLogger
 from pathlib import Path
 from typing import Dict, Tuple
 
+from general_utils import get_basename, get_subfolders, read_lines
 from tqdm import tqdm
 
 from speech_dataset_parser.data import PreData, PreDataList
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language
 from speech_dataset_parser.text_format import TextFormat
-from speech_dataset_parser.utils import (get_basename, get_subfolders,
-                                         read_lines)
 
 LANGUAGES: Dict[str, Language] = {
   "de_DE": Language.GER,
