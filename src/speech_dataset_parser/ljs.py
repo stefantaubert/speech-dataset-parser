@@ -73,24 +73,28 @@ def parse(dir_path: Path) -> PreDataList:
     parts = line.split('|')
     basename = parts[0]
     # parts[1] contains years, in parts[2] the years are written out
-    # ex. ['LJ001-0045', '1469, 1470;', 'fourteen sixty-nine, fourteen seventy;']
+    # e.g. ['LJ001-0045', '1469, 1470;', 'fourteen sixty-nine, fourteen seventy;']
     wav_path = wav_dirpath / f'{basename}.wav'
     text = parts[2]
+    text_en_symbols = tuple(text)
 
     entry = PreData(
-      identifier=basename,
+      identifier=0,
+      basename=basename,
       speaker_name=speaker_name,
       speaker_accent=accent_name,
-      text=text,
-      text_format=text_format,
-      wav_path=wav_path,
+      symbols=text_en_symbols,
+      symbols_format=text_format,
+      relative_audio_path=wav_path.relative_to(dir_path),
       speaker_gender=gender,
-      text_language=lang
+      symbols_language=lang,
     )
 
     result.append(entry)
 
   result.sort(key=sort_ljs, reverse=False)
+  result.set_identifiers()
+
   logger.info("Done.")
 
   return result

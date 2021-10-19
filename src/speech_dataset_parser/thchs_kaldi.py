@@ -62,6 +62,8 @@ def parse(dir_path: Path) -> PreDataList:
     # remove "=" from chinese transcription because it is not correct
     # occurs only in sentences with nr. 374, e.g. B22_374
     chn = chn.replace("= ", '')
+    symbols = tuple(chn)
+
     basename = get_basename(wav_file)
     speaker, nr = basename.split("_")
     nr = int(nr)
@@ -69,19 +71,21 @@ def parse(dir_path: Path) -> PreDataList:
 
     # TODO Gender
     tmp = PreData(
-      identifier=basename,
+      identifier=0,
+      basename=basename,
       speaker_name=speaker,
       speaker_accent=speaker,
-      text=chn,
-      text_format=text_format,
-      wav_path=wav_file,
+      symbols=symbols,
+      symbols_format=text_format,
+      relative_audio_path=wav_file.relative_to(dir_path),
       speaker_gender=Gender.FEMALE,
-      text_language=lang,
+      symbols_language=lang,
     )
 
     res.append(tmp)
 
   res.sort(key=sort_ds)
+  res.set_identifiers()
   logger.info("Done.")
 
   return res

@@ -30,8 +30,8 @@ def parse(dir_path: Path) -> PreDataList:
     speakers_dict[name] = gender, accent
 
   speaker_folders = get_subfolders(dir_path)
-  lang = Language.ENG
-  text_format = TextFormat.GRAPHEMES
+  symbols_language = Language.ENG
+  symbols_format = TextFormat.GRAPHEMES
 
   entries = PreDataList()
 
@@ -53,28 +53,32 @@ def parse(dir_path: Path) -> PreDataList:
     speaker_gender, speaker_accent = speakers_dict[speaker_name]
     gender = Gender.MALE if speaker_gender == "M" else Gender.FEMALE
 
-    for wav, transcript in zip(wavs, transcripts):
+    for i, (wav, transcript) in enumerate(zip(wavs, transcripts)):
       text_en = transcript.read_text()
       text_en = f"{text_en}."
+      text_en_symbols = tuple(text_en)
 
       entry = PreData(
-        identifier=get_basename(wav),
+        identifier=0,
+        basename=get_basename(wav),
         speaker_name=speaker_name,
         speaker_accent=speaker_accent,
-        text=text_en,
-        text_format=text_format,
-        wav_path=wav,
+        symbols=text_en_symbols,
+        symbols_format=symbols_format,
+        relative_audio_path=wav.relative_to(dir_path),
         speaker_gender=gender,
-        text_language=lang,
+        symbols_language=symbols_language,
       )
 
       entries.append(entry)
 
   entries.sort(key=sort_arctic, reverse=False)
+  entries.set_identifiers()
+
   logger.info(f"Parsed {len(entries)} entries from {len(speakers_dict)} speakers.")
 
   return entries
 
 
 def sort_arctic(entry: PreData) -> Tuple[str, str]:
-  return entry.speaker_name, entry.identifier
+  return entry.speaker_name, entry.basename

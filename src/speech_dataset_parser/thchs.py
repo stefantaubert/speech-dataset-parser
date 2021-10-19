@@ -78,24 +78,28 @@ def parse(dir_path: Path) -> PreDataList:
         chinese += "？"
       else:
         chinese += "。"
+      symbols = tuple(chinese)
 
       accent_name = speaker_name
       if speaker_name in ACCENTS.keys():
         accent_name = ACCENTS[speaker_name]
 
       entry = PreData(
-        identifier=name,
+        identifier=0,
+        basename=name,
         speaker_name=speaker_name,
-        text=chinese,
-        text_format=text_format,
+        symbols=symbols,
+        symbols_format=text_format,
         speaker_accent=accent_name,
-        wav_path=wav_path,
+        relative_audio_path=wav_path.relative_to(dir_path),
         speaker_gender=speaker_gender,
-        text_language=lang
+        symbols_language=lang,
       )
 
       files.append((entry, (speaker_name_letter, speaker_name_number, nr)))
 
   files.sort(key=lambda tup: tup[1], reverse=False)
   res = PreDataList([x for x, _ in files])
+  res.set_identifiers()
+
   return res

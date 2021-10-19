@@ -60,21 +60,25 @@ def parse(dir_path: Path) -> PreDataList:
         for wav_file, text_file in zip(wav_paths, text_paths):
           assert get_basename(wav_file) == get_basename(text_file)[:-len(".normalized")]
           text_en = text_file.read_text()
+          text_en_symbols = tuple(text_en)
 
           entry = PreData(
-            identifier=get_basename(wav_file),
+            identifier=0,
+            basename=get_basename(wav_file),
             speaker_name=speaker_name,
             speaker_accent=accent_name,
-            text=text_en,
-            text_format=text_format,
-            wav_path=wav_file,
+            symbols=text_en_symbols,
+            symbols_format=text_format,
+            relative_audio_path=wav_file.relative_to(dir_path),
             speaker_gender=gender,
-            text_language=lang
+            symbols_language=lang,
           )
 
           entries.append(entry)
 
   entries.sort(key=sort_libri, reverse=False)
+  entries.set_identifiers()
+
   logger.info(f"Parsed {len(entries)} entries from {len(speakers_dict)} speakers.")
 
   return entries

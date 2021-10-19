@@ -88,6 +88,7 @@ def parse(dir_path: Path) -> PreDataList:
       # ex. ['LJ001-0045', '1469, 1470;', 'fourteen sixty-nine, fourteen seventy;']
       wav_path = wav_dirpath / f'{basename}.wav'
       text = parts[2]
+      text_en_symbols = tuple(text)
 
       if not wav_path.is_file():
         print(f"file does not exist: {wav_path}")
@@ -100,19 +101,21 @@ def parse(dir_path: Path) -> PreDataList:
         continue
 
       entry = PreData(
-        identifier=basename,
+        identifier=0,
+        basename=basename,
         speaker_name=speaker_name,
         speaker_accent=accent_name,
-        text=text,
-        text_format=text_format,
-        wav_path=wav_path,
+        symbols=text_en_symbols,
+        symbols_format=text_format,
+        relative_audio_path=wav_path.relative_to(dir_path),
         speaker_gender=gender,
-        text_language=lang
+        symbols_language=lang,
       )
 
       result.append(entry)
 
   result.sort(key=sort_ds, reverse=False)
+  result.set_identifiers()
   logger.info(f"Parsed {len(result)} entries.")
 
   return result
