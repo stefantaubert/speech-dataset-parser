@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Tuple
 
 from speech_dataset_parser.libritts import parse
 
@@ -12,3 +11,6 @@ def test_all_utterances_are_included():
   assert not res.items()[0].relative_audio_path.is_absolute()
   assert isinstance(res.items()[0].symbols, tuple)
   assert res.items()[-1].identifier == len(res) - 1
+
+
+test_all_utterances_are_included()
