@@ -18,6 +18,7 @@ general-utils = {editable = true, path = "./../general-utils"}
 tqdm = "*"
 wget = "*"
 pandas = "*"
+textgrid = "*"
 
 [requires]
 python_version = "3.8"

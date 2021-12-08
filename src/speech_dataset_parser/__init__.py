@@ -1,7 +1,8 @@
 from speech_dataset_parser.arctic import parse as parse_arctic
 from speech_dataset_parser.custom import Recording
-from speech_dataset_parser.custom import parse as parse_custom
 from speech_dataset_parser.custom import save as save_custom
+#from speech_dataset_parser.custom import parse as parse_custom
+from speech_dataset_parser.custom2 import parse as parse_custom
 from speech_dataset_parser.data import PreData, PreDataList, Symbols
 from speech_dataset_parser.gender import Gender
 from speech_dataset_parser.language import Language, get_lang_from_str

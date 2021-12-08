@@ -42,3 +42,10 @@ wget http://www.caito.de/data/Training/stt_tts/pl_PL.tgz
 tar xvfz *.tgz
 rm *.tgz
 ```
+
+
+/{lang}/{speaker_name},{gender},{accent}/{format}/grids and audios
+
+eg 
+/ENG/Linda Johnson,F,US/PHONEMES_ARPA/book1/chapter1/001.TextGrid
+/ENG/Linda Johnson,F,US/PHONEMES_ARPA/book1/chapter1/001.wav
