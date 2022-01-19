@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from logging import getLogger
 from pathlib import Path
 from typing import Iterable, List, cast
@@ -7,18 +8,51 @@ from textgrid import TextGrid
 from textgrid.textgrid import Interval, IntervalTier
 
 from speech_dataset_parser.data import PreData, PreDataList, Symbols
-from speech_dataset_parser.gender import (get_gender_from_str,
-                                          is_gender_from_str_supported)
-from speech_dataset_parser.language import (get_lang_from_str,
-                                            is_lang_from_str_supported)
-from speech_dataset_parser.text_format import (
-    get_format_from_str, is_symbol_format_from_str_supported)
+from speech_dataset_parser.gender import Gender
+from speech_dataset_parser.language import Language
+from speech_dataset_parser.text_format import TextFormat
 
 TIER_NAME = "transcript"
 TIER_NAME = "words-ipa"
 
-# default was 8 but praat has 16
+# TODO TextFormat as tier-name not as folder
+# Example structure: .../pilot_africa/en/Ibukun,m,Nigerian/phonemes-arpa/.../
+
+# praat has 16
 DEFAULT_TEXTGRID_PRECISION = 16
+
+indicators_to_genders = OrderedDict((
+  (Gender.MALE, "m"),
+  (Gender.FEMALE, "f"),
+))
+
+genders_to_indicators = dict(zip(
+  indicators_to_genders.values(),
+  indicators_to_genders.keys()
+))
+
+indicators_to_languages = OrderedDict((
+  (Language.ENG, "en"),
+  (Language.GER, "de"),
+  (Language.CHN, "zh"),
+))
+
+languages_to_indicators = dict(zip(
+  indicators_to_languages.values(),
+  indicators_to_languages.keys()
+))
+
+indicators_to_formats = OrderedDict((
+  (TextFormat.PHONEMES_ARPA, "phonemes-arpa"),
+  (TextFormat.PHONEMES_IPA, "phonemes-ipa"),
+  (TextFormat.PHONES_IPA, "phones-ipa"),
+  (TextFormat.GRAPHEMES, "graphemes"),
+))
+
+formats_to_indicators = dict(zip(
+  indicators_to_languages.values(),
+  indicators_to_languages.keys()
+))
 
 
 def parse(dir_path: Path) -> PreDataList:
@@ -30,11 +64,11 @@ def parse(dir_path: Path) -> PreDataList:
   result = PreDataList()
   language_folders = get_subfolders(dir_path)
   for language_folder in language_folders:
-    is_known_language = is_lang_from_str_supported(language_folder.name)
+    is_known_language = language_folder.name in languages_to_indicators
     if not is_known_language:
       logger.info(f"Skipped unknown language \"{language_folder.name}\".")
       continue
-    language = get_lang_from_str(language_folder.name)
+    language = languages_to_indicators[language_folder.name]
     speaker_folders = get_subfolders(language_folder)
     for speaker_folder in speaker_folders:
       parts = speaker_folder.name.split(",")
@@ -54,21 +88,21 @@ def parse(dir_path: Path) -> PreDataList:
         logger.info(f"Skipped speaker with no accent ({speaker_folder.relative_to(dir_path)}).")
         continue
 
-      is_known_gender = is_gender_from_str_supported(speaker_gender_str)
+      is_known_gender = speaker_gender_str in genders_to_indicators
       if not is_known_gender:
         logger.info(
           f"Skipped speaker with unknown gender \"{speaker_gender_str}\" ({speaker_folder.relative_to(dir_path)}).")
         continue
-      speaker_gender = get_gender_from_str(speaker_gender_str)
+      speaker_gender = genders_to_indicators[speaker_gender_str]
 
       format_folders = get_subfolders(speaker_folder)
       for format_folder in format_folders:
-        is_known_format = is_symbol_format_from_str_supported(format_folder.name)
+        is_known_format = format_folder.name in formats_to_indicators
         if not is_known_format:
           logger.info(
             f"Skipped unknown format \"{format_folder.name}\" ({format_folder.relative_to(dir_path)}).")
           continue
-        symbol_format = get_format_from_str(format_folder.name)
+        symbol_format = formats_to_indicators[format_folder.name]
 
         files = get_all_files_in_all_subfolders(format_folder)
         files = list(file.relative_to(dir_path) for file in files)
