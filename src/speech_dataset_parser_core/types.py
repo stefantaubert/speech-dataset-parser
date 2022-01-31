@@ -9,6 +9,7 @@ DatasetTypes = Literal[DatasetLJSpeech, DatasetArctic]
 
 
 Symbols = Tuple[str, ...]
+Intervals = Tuple[float, ...]
 Language = str
 Gender = int
 Accent = str
@@ -17,9 +18,10 @@ Accent = str
 @dataclass()
 class Entry:
   symbols: Symbols
+  intervals: Intervals
   symbols_language: Language
   speaker_name: str
   speaker_accent: Accent
   speaker_gender: Gender
   # relative path
-  audio_file: Path
+  audio_file_rel: Path
