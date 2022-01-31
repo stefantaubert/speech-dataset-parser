@@ -5,9 +5,6 @@ from logging import getLogger
 from pathlib import Path
 
 from speech_dataset_parser.data import PreDataList
-from speech_dataset_parser.gender import Gender
-from speech_dataset_parser.language import Language
-from speech_dataset_parser.text_format import TextFormat
 
 
 def data_has_unique_identifiers(data: PreDataList) -> bool:
