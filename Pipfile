@@ -12,6 +12,7 @@ pylint = "*"
 rope = "*"
 pipenv-setup = "*"
 pytest = "*"
+cx-freeze = "*"
 
 [packages]
 general-utils = {editable = true, path = "./../general-utils"}

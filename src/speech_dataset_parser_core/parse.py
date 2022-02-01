@@ -1,30 +1,28 @@
-import wave
 from logging import getLogger
 from pathlib import Path
-from shutil import copy2, rmtree
 from typing import Generator, Iterable, List, Optional, Tuple, cast
 
-from general_utils import get_files_dict, get_files_tuples, get_subfolders
+from general_utils import get_files_dict, get_subfolders
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
 
 from speech_dataset_parser_core.types import Entry
-from speech_dataset_parser_core.validation import (DirectoryAlreadyExistsError,
-                                                   DirectoryNotExistsError,
-                                                   FileNotExistsError,
+from speech_dataset_parser_core.validation import (DirectoryNotExistsError,
                                                    ValidationError)
 
 
 def parse_generic(directory: Path, tier_name: str, n_digits: int) -> Tuple[Optional[ValidationError], Optional[List[Entry]]]:
   if error := DirectoryNotExistsError.validate(directory):
-    return error
+    return error, None
 
   result = list(parse_generic_core(directory, tier_name, n_digits))
-  return result
+  return None, result
 
 
 def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Generator[Entry, None, None]:
   assert directory.is_dir()
+  assert 0 <= n_digits <= 16
+  assert isinstance(n_digits, int)
 
   logger = getLogger(__name__)
 
@@ -73,8 +71,9 @@ def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Genera
       intervals = (interval.maxTime for interval in cast(Iterable[Interval], tier.intervals))
 
       audio_path = speaker_dir / audio_files[file_stem]
+      audio_path_rel = audio_path.relative_to(directory)
 
       result = Entry(tuple(symbols), tuple(intervals), speaker_lang, speaker_name,
-                     speaker_accent, speaker_gender, audio_path)
+                     speaker_accent, speaker_gender, audio_path_rel)
       assert len(result.intervals) == len(result.symbols)
       yield result
