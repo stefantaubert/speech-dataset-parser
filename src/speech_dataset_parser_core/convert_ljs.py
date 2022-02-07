@@ -76,8 +76,6 @@ def convert_to_generic(directory: Path, use_audio_symlink: bool, n_digits: int, 
     else:
       copy2(wav_file_in, wav_file_out)
 
-  logger.debug("Done.")
-
 
 def get_wav_duration_s(wav_file: Path) -> float:
   with open(wav_file, mode="rb") as f:

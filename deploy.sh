@@ -1,7 +1,7 @@
 #!/bin/bash
 
 prog_name="speech-dataset-parser"
-cli_path=src/speech_dataset_parser_cli/cli.py
+cli_path=src/speech_dataset_parser_app/cli.py
 
 mkdir ./dist
 deactivate
