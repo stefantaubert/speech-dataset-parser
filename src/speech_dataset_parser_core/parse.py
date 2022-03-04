@@ -43,25 +43,25 @@ def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Genera
   for speaker_dir in speaker_dirs:
     speaker_parts = speaker_dir.name.split(",")
     if len(speaker_parts) not in {3, 4}:
-      logger.error(f"{str(speaker_dir.relative_to(directory))}: Couldn't be parsed. Ignored.")
+      logger.error(f"{str(speaker_dir.relative_to(directory))}: Directory '{speaker_dir.name}' couldn't be parsed because not all information are provided in the name. Ignored.")
       continue
     speaker_name = speaker_parts[0]
     speaker_gender = speaker_parts[1]
     if not speaker_gender.isnumeric():
       logger.error(
-        f"{str(speaker_dir.relative_to(directory))}: Gender code needs to be a number. Ignored.")
+        f"{str(speaker_dir.relative_to(directory))}: Gender code '{speaker_gender}' needs to be a number. Ignored.")
       continue
     speaker_gender = int(speaker_gender)
     if not speaker_gender in GENDERS:
       logger.error(
-        f"{str(speaker_dir.relative_to(directory))}: Gender code not recognized. Ignored.")
+        f"{str(speaker_dir.relative_to(directory))}: Gender code '{speaker_gender}' not recognized. Ignored.")
       continue
 
     speaker_lang = speaker_parts[2]
     # TODO check lang code
-    if len(speaker_lang) != 3 or speaker_lang.islower():
+    if len(speaker_lang) != 3 or not speaker_lang.islower():
       logger.error(
-        f"{str(speaker_dir.relative_to(directory))}: Language code is not valid (needs to be three lower-case letters). Ignored.")
+        f"{str(speaker_dir.relative_to(directory))}: Language code '{speaker_lang}' is not valid (needs to be three lower-case letters). Ignored.")
       continue
 
     speaker_accent = None
@@ -81,7 +81,7 @@ def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Genera
       grid.read(grid_file_abs, n_digits)
       tier = cast(Optional[IntervalTier], grid.getFirst(tier_name))
       if tier is None:
-        logger.error(f"{str(grid_file_rel)}: Tier does not exist! Ignored.")
+        logger.error(f"{str(grid_file_rel)}: Tier '{tier_name}' does not exist! Ignored.")
       symbols = (interval.mark for interval in cast(Iterable[Interval], tier.intervals))
       symbols = tuple(symbol if symbol is not None else "" for symbol in symbols)
       intervals = tuple(interval.maxTime for interval in cast(Iterable[Interval], tier.intervals))
