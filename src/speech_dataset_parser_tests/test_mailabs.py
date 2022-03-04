@@ -1,7 +1,7 @@
 
 from pathlib import Path
 
-from speech_dataset_parser.mailabs import parse
+from speech_dataset_parser_old.mailabs import parse
 
 LOCAL_PATH = Path('/data/datasets/mailabs/all')
 

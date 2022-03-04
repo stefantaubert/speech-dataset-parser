@@ -10,6 +10,18 @@ from speech_dataset_parser_core.types import Entry
 from speech_dataset_parser_core.validation import (DirectoryNotExistsError,
                                                    ValidationError)
 
+GENDER_UNKNOWN = 0
+GENDER_MALE = 1
+GENDER_FEMALE = 2
+GENDER_NOT_APPLICABLE = 9
+
+GENDERS = {
+  GENDER_UNKNOWN,
+  GENDER_MALE,
+  GENDER_FEMALE,
+  GENDER_NOT_APPLICABLE
+}
+
 
 def parse_generic(directory: Path, tier_name: str, n_digits: int) -> Tuple[Optional[ValidationError], Optional[List[Entry]]]:
   if error := DirectoryNotExistsError.validate(directory):
@@ -40,13 +52,17 @@ def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Genera
         f"{str(speaker_dir.relative_to(directory))}: Gender code needs to be a number. Ignored.")
       continue
     speaker_gender = int(speaker_gender)
-    if not speaker_gender in {0, 1, 2, 9}:
+    if not speaker_gender in GENDERS:
       logger.error(
         f"{str(speaker_dir.relative_to(directory))}: Gender code not recognized. Ignored.")
       continue
 
     speaker_lang = speaker_parts[2]
     # TODO check lang code
+    if len(speaker_lang) != 3 or speaker_lang.islower():
+      logger.error(
+        f"{str(speaker_dir.relative_to(directory))}: Language code is not valid (needs to be three lower-case letters). Ignored.")
+      continue
 
     speaker_accent = None
     if len(speaker_parts) == 4:
@@ -67,13 +83,13 @@ def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Genera
       if tier is None:
         logger.error(f"{str(grid_file_rel)}: Tier does not exist! Ignored.")
       symbols = (interval.mark for interval in cast(Iterable[Interval], tier.intervals))
-      symbols = (symbol if symbol is not None and len(symbol) > 0 else " " for symbol in symbols)
-      intervals = (interval.maxTime for interval in cast(Iterable[Interval], tier.intervals))
+      symbols = tuple(symbol if symbol is not None else "" for symbol in symbols)
+      intervals = tuple(interval.maxTime for interval in cast(Iterable[Interval], tier.intervals))
+      assert len(symbols) == len(intervals)
 
       audio_path = speaker_dir / audio_files[file_stem]
       audio_path_rel = audio_path.relative_to(directory)
 
-      result = Entry(tuple(symbols), tuple(intervals), speaker_lang, speaker_name,
+      result = Entry(symbols, intervals, speaker_lang, speaker_name,
                      speaker_accent, speaker_gender, audio_path_rel)
-      assert len(result.intervals) == len(result.symbols)
       yield result

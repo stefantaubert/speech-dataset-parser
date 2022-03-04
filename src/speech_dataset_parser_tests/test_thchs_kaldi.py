@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from speech_dataset_parser.thchs_kaldi import parse
+from speech_dataset_parser_old.thchs_kaldi import parse
 
 LOCAL_PATH = Path('/data/datasets/thchs/THCHS-30')
 

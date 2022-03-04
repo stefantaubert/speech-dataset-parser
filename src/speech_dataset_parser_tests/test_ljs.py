@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Tuple
 
-from speech_dataset_parser.ljs import parse
+from speech_dataset_parser_old.ljs import parse
 
 LOCAL_PATH = Path('/data/datasets/LJSpeech-1.1')
 

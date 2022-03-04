@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import List, Tuple
 
 
-from speech_dataset_parser.gender import Gender
-from speech_dataset_parser.language import Language
-from speech_dataset_parser.text_format import TextFormat
+from speech_dataset_parser_old.gender import Gender
+from speech_dataset_parser_old.language import Language
+from speech_dataset_parser_old.text_format import TextFormat
 
 Symbols = Tuple[str, ...]
 

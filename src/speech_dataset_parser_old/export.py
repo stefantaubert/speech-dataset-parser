@@ -4,7 +4,7 @@ import shutil
 from logging import getLogger
 from pathlib import Path
 
-from speech_dataset_parser.data import PreDataList
+from speech_dataset_parser_old.data import PreDataList
 
 
 def data_has_unique_identifiers(data: PreDataList) -> bool:

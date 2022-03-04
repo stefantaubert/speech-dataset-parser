@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from speech_dataset_parser.libritts import parse
+from speech_dataset_parser_old.libritts import parse
 
 LOCAL_PATH = Path('/data/datasets/libriTTS')
 

@@ -5,11 +5,11 @@ from typing import List, Tuple
 from general_utils import read_lines
 from tqdm import tqdm
 
-from speech_dataset_parser.data import PreData, PreDataList
-from speech_dataset_parser.gender import Gender
-from speech_dataset_parser.language import Language
-from speech_dataset_parser.text_format import TextFormat
-from speech_dataset_parser.utils import download_tar
+from speech_dataset_parser_old.data import PreData, PreDataList
+from speech_dataset_parser_old.gender import Gender
+from speech_dataset_parser_old.language import Language
+from speech_dataset_parser_old.text_format import TextFormat
+from speech_dataset_parser_old.utils import download_tar
 
 QUESTION_PARTICLE_1 = '吗'
 QUESTION_PARTICLE_2 = '呢'

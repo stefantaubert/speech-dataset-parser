@@ -1,22 +1,23 @@
 from collections import OrderedDict
 from logging import getLogger
 from pathlib import Path
-from typing import Iterable, List, cast
+from typing import Generator, Iterable, List, cast
 
 from general_utils.main import get_all_files_in_all_subfolders, get_subfolders
 from textgrid import TextGrid
 from textgrid.textgrid import Interval, IntervalTier
 
-from speech_dataset_parser.data import PreData, PreDataList, Symbols
-from speech_dataset_parser.gender import Gender
-from speech_dataset_parser.language import Language
-from speech_dataset_parser.text_format import TextFormat
+from speech_dataset_parser_old.data import PreData, PreDataList, Symbols
+from speech_dataset_parser_old.gender import Gender
+from speech_dataset_parser_old.language import Language
+from speech_dataset_parser_old.text_format import TextFormat
 
 TIER_NAME = "transcript"
 TIER_NAME = "words-ipa"
 
 # TODO TextFormat as tier-name not as folder
 # Example structure: .../pilot_africa/en/Ibukun,m,Nigerian/phonemes-arpa/.../
+# Example structure: .../pilot_africa/{lang}/{speaker-name},{gender},{accent}/phonemes-arpa/.../
 
 # praat has 16
 DEFAULT_TEXTGRID_PRECISION = 16
@@ -42,12 +43,12 @@ languages_to_indicators = dict(zip(
   indicators_to_languages.keys()
 ))
 
-indicators_to_formats = OrderedDict((
-  (TextFormat.PHONEMES_ARPA, "phonemes-arpa"),
-  (TextFormat.PHONEMES_IPA, "phonemes-ipa"),
-  (TextFormat.PHONES_IPA, "phones-ipa"),
-  (TextFormat.GRAPHEMES, "graphemes"),
-))
+# indicators_to_formats = OrderedDict((
+#   (TextFormat.PHONEMES_ARPA, "phonemes-arpa"),
+#   (TextFormat.PHONEMES_IPA, "phonemes-ipa"),
+#   (TextFormat.PHONES_IPA, "phones-ipa"),
+#   (TextFormat.GRAPHEMES, "graphemes"),
+# ))
 
 formats_to_indicators = dict(zip(
   indicators_to_languages.values(),
@@ -129,7 +130,7 @@ def parse(dir_path: Path) -> PreDataList:
             logger.info(
               f"Skipping \"{grid_path}\" because it does not contain a \"{TIER_NAME}\" tier.")
             continue
-          symbols = tier_to_symbols(transcript_tier)
+          symbols = get_symbols_from_tier(transcript_tier)
           entry = PreData(
             identifier=len(result),
             basename=grid_path.stem,
@@ -149,10 +150,16 @@ def parse(dir_path: Path) -> PreDataList:
   return result
 
 
+def get_symbols_from_tier(tier: IntervalTier) -> Generator[str, None, None]:
+  for interval in cast(Iterable[Interval], tier.intervals):
+    if not interval_is_empty(interval):
+      yield interval.mark
+
+
 def tier_to_symbols(tier: IntervalTier, split_symbol: str = " ", join_symbol: str = " ") -> Symbols:
   words: List[Symbols] = []
   for interval in cast(Iterable[Interval], tier.intervals):
-    if not interval_is_empty(interval):
+    if not interval_is_empty_or_whitespace(interval):
       interval_text: str = interval.mark
       interval_text = interval_text.strip()
       symbols = interval_text.split(split_symbol)
@@ -173,4 +180,8 @@ def symbols_join(list_of_symbols: List[Symbols], join_symbol: str) -> Symbols:
 
 
 def interval_is_empty(interval: Interval) -> bool:
+  return interval.mark is None or interval.mark == ""
+
+
+def interval_is_empty_or_whitespace(interval: Interval) -> bool:
   return interval.mark is None or len(str(interval.mark).strip()) == 0

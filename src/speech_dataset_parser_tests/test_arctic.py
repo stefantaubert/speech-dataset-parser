@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from speech_dataset_parser.arctic import parse
+from speech_dataset_parser_old.arctic import parse
 
 LOCAL_PATH = Path('/data/datasets/l2arctic')
 

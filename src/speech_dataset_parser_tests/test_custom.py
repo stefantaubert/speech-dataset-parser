@@ -1,7 +1,7 @@
 
 from pathlib import Path
 
-from speech_dataset_parser.custom import parse
+from speech_dataset_parser_old.custom import parse
 
 LOCAL_PATH = Path('/data/datasets/NNLV_pilot')
 

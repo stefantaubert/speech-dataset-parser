@@ -9,10 +9,10 @@
 # from general_utils.main import cast_as
 # from tqdm import tqdm
 
-# from speech_dataset_parser.data import PreData, PreDataList, Symbols
-# from speech_dataset_parser.gender import Gender
-# from speech_dataset_parser.language import Language
-# from speech_dataset_parser.text_format import TextFormat
+# from speech_dataset_parser_old.data import PreData, PreDataList, Symbols
+# from speech_dataset_parser_old.gender import Gender
+# from speech_dataset_parser_old.language import Language
+# from speech_dataset_parser_old.text_format import TextFormat
 
 # DATA_NAME = "data.pkl"
 # AUDIO_FOLDER_NAME = "audio"

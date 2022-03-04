@@ -7,11 +7,11 @@
 # from general_utils import get_subfolders
 # from tqdm import tqdm
 
-# from speech_dataset_parser.data import PreData, PreDataList, Symbols
-# from speech_dataset_parser.gender import Gender
-# from speech_dataset_parser.language import (Language, get_lang_from_str,
+# from speech_dataset_parser_old.data import PreData, PreDataList, Symbols
+# from speech_dataset_parser_old.gender import Gender
+# from speech_dataset_parser_old.language import (Language, get_lang_from_str,
 #                                             is_lang_from_str_supported)
-# from speech_dataset_parser.text_format import TextFormat
+# from speech_dataset_parser_old.text_format import TextFormat
 
 # DATA_CSV_NAME = "data.csv"
 # AUDIO_FOLDER_NAME = "audio"
