@@ -6,21 +6,10 @@ from general_utils import get_files_dict, get_subfolders
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
 
+from speech_dataset_parser_core.globals import GENDERS
 from speech_dataset_parser_core.types import Entry
 from speech_dataset_parser_core.validation import (DirectoryNotExistsError,
                                                    ValidationError)
-
-GENDER_UNKNOWN = 0
-GENDER_MALE = 1
-GENDER_FEMALE = 2
-GENDER_NOT_APPLICABLE = 9
-
-GENDERS = {
-  GENDER_UNKNOWN,
-  GENDER_MALE,
-  GENDER_FEMALE,
-  GENDER_NOT_APPLICABLE
-}
 
 
 def parse_generic(directory: Path, tier_name: str, n_digits: int) -> Tuple[Optional[ValidationError], Optional[List[Entry]]]:
@@ -58,7 +47,7 @@ def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Genera
       continue
 
     speaker_lang = speaker_parts[2]
-    # TODO check lang code
+    # TODO check lang code better
     if len(speaker_lang) != 3 or not speaker_lang.islower():
       logger.error(
         f"{str(speaker_dir.relative_to(directory))}: Language code '{speaker_lang}' is not valid (needs to be three lower-case letters). Ignored.")

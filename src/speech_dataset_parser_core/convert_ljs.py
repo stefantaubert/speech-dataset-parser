@@ -7,6 +7,7 @@ from typing import Generator, List, Optional, Tuple, cast
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
 
+from speech_dataset_parser_core.globals import GENDER_FEMALE
 from speech_dataset_parser_core.validation import (DirectoryAlreadyExistsError,
                                                    DirectoryNotExistsError,
                                                    FileNotExistsError,
@@ -47,7 +48,7 @@ def convert_to_generic(directory: Path, use_audio_symlink: bool, n_digits: int, 
   speaker_name = 'Linda Johnson'
   accent_name = "North American"
   language = "eng"
-  gender = 2
+  gender = GENDER_FEMALE
 
   speaker_dir_out_abs = output_directory / f"{speaker_name},{gender},{language},{accent_name}"
 
