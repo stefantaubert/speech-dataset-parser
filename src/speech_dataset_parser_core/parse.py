@@ -80,5 +80,5 @@ def parse_generic_core(directory: Path, tier_name: str, n_digits: int) -> Genera
       audio_path_rel = audio_path.relative_to(directory)
 
       result = Entry(symbols, intervals, speaker_lang, speaker_name,
-                     speaker_accent, speaker_gender, audio_path_rel)
+                     speaker_accent, speaker_gender, audio_path_rel, audio_path)
       yield result

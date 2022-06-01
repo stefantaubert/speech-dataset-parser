@@ -17,6 +17,7 @@ Accent = str
 
 @dataclass()
 class Entry:
+  
   symbols: Symbols
   intervals: Intervals
   symbols_language: Language
@@ -25,3 +26,5 @@ class Entry:
   speaker_gender: Gender
   # relative path
   audio_file_rel: Path
+  # absolute path
+  audio_file_abs: Path
