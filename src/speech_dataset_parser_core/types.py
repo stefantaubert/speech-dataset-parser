@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Tuple
 
-DatasetLJSpeech = Literal["ljs"]
-DatasetArctic = Literal["arc"]
+# DatasetLJSpeech = Literal["ljs"]
+# DatasetArctic = Literal["arc"]
 
-DatasetTypes = Literal[DatasetLJSpeech, DatasetArctic]
+# DatasetTypes = Literal[DatasetLJSpeech, DatasetArctic]
 
 
 Symbols = Tuple[str, ...]
