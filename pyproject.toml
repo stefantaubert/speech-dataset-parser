@@ -48,7 +48,7 @@ Homepage = "https://github.com/stefantaubert/speech-dataset-parser"
 Issues = "https://github.com/stefantaubert/speech-dataset-parser/issues"
 
 [project.scripts]
-speech-dataset-converter-cli = "speech_dataset_converter_cli.cli:run_prod"
+dataset-converter-cli = "speech_dataset_converter_cli.cli:run_prod"
 
 [tool.setuptools.packages.find]
 where = ["src"]

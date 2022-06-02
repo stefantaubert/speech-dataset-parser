@@ -39,7 +39,7 @@ def convert_to_generic_ns(ns: Namespace) -> bool:
 
   try:
     convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
-                       ns.tier, ns.output_directory, ns.overwrite)
+                       ns.tier, ns.output_directory)
   except ValueError as ex:
     logger.debug(ex)
     assert len(ex.args) == 1

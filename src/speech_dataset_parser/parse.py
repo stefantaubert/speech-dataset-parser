@@ -74,8 +74,7 @@ def parse_dataset(directory: Path, tier_name: str, n_digits: Literal[1, 2, 3, 4,
       assert len(symbols) == len(intervals)
 
       audio_path = speaker_dir / audio_files[file_stem]
-      audio_path_rel = audio_path.relative_to(directory)
 
       result = Entry(symbols, intervals, speaker_lang, speaker_name,
-                     speaker_accent, speaker_gender, audio_path_rel, audio_path)
+                     speaker_accent, speaker_gender, audio_path)
       yield result

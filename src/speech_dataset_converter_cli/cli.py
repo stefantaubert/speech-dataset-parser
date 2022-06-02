@@ -1,5 +1,4 @@
 import argparse
-import imp
 import platform
 import sys
 from argparse import ArgumentParser
@@ -34,7 +33,7 @@ def formatter(prog):
 
 
 def get_parsers() -> Parsers:
-  yield "convert-ljs", "convert the LJSpeech dataset to a generic dataset", get_convert_ljs_to_generic_parser
+  yield "convert-ljs", "convert LJ Speech dataset to a generic dataset", get_convert_ljs_to_generic_parser
 
 
 def print_features():
@@ -46,7 +45,7 @@ def print_features():
 def _init_parser():
   main_parser = ArgumentParser(
     formatter_class=formatter,
-    description="This program parses datasets.",
+    description="This program converts common datasets into a generic representation.",
   )
   main_parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
   subparsers = main_parser.add_subparsers(help="description")

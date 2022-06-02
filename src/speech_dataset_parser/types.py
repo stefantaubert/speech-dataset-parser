@@ -28,7 +28,6 @@ class Entry:
   speaker_name: str
   speaker_accent: str
   speaker_gender: int
-  # relative path
-  audio_file_rel: Path
   # absolute path
   audio_file_abs: Path
+  # TODO add duration read from grid
