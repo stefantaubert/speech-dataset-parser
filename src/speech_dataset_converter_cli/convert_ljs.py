@@ -1,61 +1,64 @@
 import wave
+from argparse import ArgumentParser, Namespace
 from logging import getLogger
 from pathlib import Path
-from shutil import copy2, rmtree
-from typing import Generator, List, Optional, Tuple, cast
+from shutil import copy2
+from typing import Generator, List, Tuple, cast
 
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
 
-from speech_dataset_parser.globals import GENDER_FEMALE
-from speech_dataset_parser_core.validation import (DirectoryAlreadyExistsError,
-                                                   DirectoryNotExistsError,
-                                                   FileNotExistsError,
-                                                   ValidationError)
+from speech_dataset_converter_cli.argparse_helper import (parse_existing_directory,
+                                                          parse_non_empty_or_whitespace,
+                                                          parse_non_existing_directory)
+from speech_dataset_parser import GENDER_FEMALE
+from speech_dataset_parser.parse import PARTS_SEP
 
 
-class InvalidLineFormatError(ValidationError):
-  def __init__(self, line_parts: str, line_nr: int) -> None:
-    super().__init__()
-    self.line_parts = line_parts
-    self.line_nr = line_nr
-
-  @classmethod
-  def validate(cls, line_parts: str, line_nr: int):
-    if not len(line_parts) == 3:
-      return cls(line_parts, line_nr)
-    return None
-
-  @property
-  def default_message(self) -> str:
-    return
+def get_convert_ljs_to_generic_parser(parser: ArgumentParser):
+  parser.description = "This command converts the LJSpeech dataset to a generic one."
+  parser.add_argument("directory", type=parse_existing_directory, metavar="directory",
+                      help="directory containing the LJSpeech content")
+  parser.add_argument("output_directory", type=parse_non_existing_directory, metavar="output-directory",
+                      help="output directory")
+  parser.add_argument("--tier", type=parse_non_empty_or_whitespace, metavar="NAME",
+                      help="name of the output tier", default="transcription")
+  parser.add_argument("--n-digits", type=int, choices=range(17), metavar="DIGITS",
+                      help="number of digits in textgrid", default=16)
+  parser.add_argument("-s", "--symlink", action="store_true",
+                      help="create symbolic links to the audio files instead of copies")
+  return convert_to_generic_ns
 
 
-def convert_to_generic(directory: Path, use_audio_symlink: bool, n_digits: int, tier_name: str, output_directory: Path, overwrite: bool) -> Optional[ValidationError]:
+def convert_to_generic_ns(ns: Namespace) -> bool:
   logger = getLogger(__name__)
 
-  if error := DirectoryNotExistsError.validate(directory):
-    return error
+  if ns.output_directory == ns.directory:
+    logger.error("Parameter 'directory' and 'output_directory': The two directories need to be distinct!")
+    return False
 
-  metadata_csv = get_metafile_path(directory)
+  try:
+    convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
+                       ns.tier, ns.output_directory, ns.overwrite)
+  except ValueError as ex:
+    logger.debug(ex)
+    assert len(ex.args) == 1
+    logger.error(ex.args[0])
+    return False
 
-  if error := FileNotExistsError.validate(metadata_csv):
-    return error
+  return True
 
-  if not overwrite and (error := DirectoryAlreadyExistsError.validate(output_directory)):
-    return error
+
+def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, output_directory: Path) -> None:
+  logger = getLogger(__name__)
 
   speaker_name = 'Linda Johnson'
   accent_name = "North American"
   language = "eng"
   gender = GENDER_FEMALE
 
-  speaker_dir_out_abs = output_directory / f"{speaker_name},{gender},{language},{accent_name}"
-
-  if output_directory.exists():
-    assert overwrite
-    rmtree(output_directory)
-    logger.info("Removed existing output directory.")
+  speaker_dir_out_abs = output_directory / \
+      f"{speaker_name}{PARTS_SEP}{gender}{PARTS_SEP}{language}{PARTS_SEP}{accent_name}"
 
   for text, wav_file_relative in parse_files(directory):
     logger.debug(f"Processing '{str(wav_file_relative)}'...")
@@ -66,13 +69,10 @@ def convert_to_generic(directory: Path, use_audio_symlink: bool, n_digits: int, 
     grid_file_out = speaker_dir_out_abs / \
         wav_file_relative.parent / f"{wav_file_relative.stem}.TextGrid"
 
-    if not overwrite and wav_file_out.is_file():
-      logger.info(f"File '{str(wav_file_out)}' already exists. Skipped.")
-
     wav_file_out.parent.mkdir(parents=True, exist_ok=True)
-    grid = create_grid(wav_file_in, text, tier_name, n_digits)
+    grid = create_grid(wav_file_in, text, tier, n_digits)
     grid.write(grid_file_out)
-    if use_audio_symlink:
+    if symlink:
       wav_file_out.symlink_to(wav_file_in)
     else:
       copy2(wav_file_in, wav_file_out)
@@ -108,17 +108,17 @@ def get_intervals(symbols: List[str], total_duration_s: float, n_digits: int) ->
 
 
 def parse_files(directory: Path) -> Generator[Tuple[str, Path], None, None]:
-  assert directory.is_dir()
-  metadata_csv = get_metafile_path(directory)
-  assert metadata_csv.is_file()
+  metadata_csv = directory / 'metadata.csv'
+
+  if not metadata_csv.is_file():
+    raise ValueError("Metadata file was not found!")
 
   wav_dir = directory / 'wavs'
 
   logger = getLogger(__name__)
-  logger.debug("Parsing files...")
 
   lines = metadata_csv.read_text().splitlines()
-  for line_nr, line in enumerate(tqdm(lines), start=1):
+  for line_nr, line in enumerate(tqdm(lines, desc="Parsing files", unit=" file(s)"), start=1):
     parts = line.split('|')
     if not len(parts) == 3:
       logger.error(f"Line {line_nr}: '{line}' couldn't be parsed! Ignored.")
@@ -138,7 +138,3 @@ def parse_files(directory: Path) -> Generator[Tuple[str, Path], None, None]:
 
     wav_file_rel = wav_file_abs.relative_to(directory)
     yield text_normalized, wav_file_rel
-
-
-def get_metafile_path(directory: Path) -> Path:
-  return directory / 'metadata.csv'

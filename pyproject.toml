@@ -1,7 +1,7 @@
 [project]
 name = "speech_dataset_parser"
 version = "0.0.1"
-description = "Library to parse speech datasets according to the format."
+description = "Library to parse speech datasets according to a predefined format."
 readme = "README.md"
 requires-python = ">=3.6"
 license = {text = "MIT"}
@@ -38,17 +38,8 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-  "torch",
-  "mel-cepstral-distance>=0.0.1",
-  "pandas",
-  "librosa",
-  "plotly",
-  "scikit-image",
-  "matplotlib",
-  "scikit-learn",
   "tqdm",
-  "numpy",
-  "scipy",
+  "TextGrid>=1.5",
   "ordered_set>=4.1.0",
 ]
 
@@ -56,21 +47,24 @@ dependencies = [
 Homepage = "https://github.com/stefantaubert/speech-dataset-parser"
 Issues = "https://github.com/stefantaubert/speech-dataset-parser/issues"
 
+[project.scripts]
+speech-dataset-converter-cli = "speech_dataset_converter_cli.cli:run_prod"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = [
   "speech_dataset_parser",
   "speech_dataset_parser_tests",
   "speech_dataset_parser_tests.*",
+  "speech_dataset_converter_cli",
+  "speech_dataset_converter_cli_tests",
+  "speech_dataset_converter_cli_tests.*",
 ]
 exclude = [
   "speech_dataset_parser_debug",
-  "speech_dataset_parser_api",
-  "speech_dataset_parser_app",
-  "speech_dataset_parser_core",
+  "speech_dataset_converter_cli_debug",
   "speech_dataset_parser_old",
-  "speech_dataset_parser_core_tests",
-  "speech_dataset_parser_cli_debug",
+  "speech_dataset_parser_old_tests",
 ]
 namespaces = true
 
@@ -79,6 +73,7 @@ log_cli = true
 log_level = "DEBUG"
 testpaths = [
   "src/speech_dataset_parser_tests",
+  "src/speech_dataset_converter_cli_tests",
 ]
 console_output_style = "count"
 

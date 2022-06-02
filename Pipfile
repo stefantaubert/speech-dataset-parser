@@ -16,9 +16,10 @@ twine = "*"
 
 [packages]
 tqdm = "*"
-wget = "*"
-pandas = "*"
-textgrid = "*"
+#wget = "*"
+#pandas = "*"
+ordered-set = ">=4.1.0"
+TextGrid = ">=1.5"
 
 [requires]
 python_version = "3.8"

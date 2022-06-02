@@ -131,3 +131,5 @@ dmypy.json
 .vscode
 out/
 *_debug/
+deploy.sh
+playground.sh

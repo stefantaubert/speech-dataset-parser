@@ -53,6 +53,13 @@ def parse_existing_directory(value: str) -> Path:
   return path
 
 
+def parse_non_existing_directory(value: str) -> Path:
+  path = parse_path(value)
+  if path.exists():
+    raise ArgumentTypeError("Directory already exists!")
+  return path
+
+
 def parse_required(value: Optional[str]) -> str:
   if value is None:
     raise ArgumentTypeError("Value must not be None!")
