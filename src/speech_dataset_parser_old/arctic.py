@@ -2,8 +2,8 @@ from logging import getLogger
 from pathlib import Path
 from typing import Tuple
 
-from general_utils import (get_basename, get_filepaths, get_subfolders,
-                           read_lines)
+from speech_dataset_parser_core.utils import (get_basename, get_filepaths,
+                                              get_subfolders, read_lines)
 from tqdm import tqdm
 
 from speech_dataset_parser_old.data import PreData, PreDataList

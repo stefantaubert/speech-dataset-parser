@@ -2,12 +2,12 @@ from logging import getLogger
 from pathlib import Path
 from typing import Generator, Iterable, List, Optional, Tuple, cast
 
-from general_utils import get_files_dict, get_subfolders
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
 
 from speech_dataset_parser_core.globals import GENDERS
 from speech_dataset_parser_core.types import Entry
+from speech_dataset_parser_core.utils import get_files_dict, get_subfolders
 from speech_dataset_parser_core.validation import (DirectoryNotExistsError,
                                                    ValidationError)
 

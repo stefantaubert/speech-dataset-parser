@@ -6,16 +6,15 @@ verify_ssl = true
 [dev-packages]
 speech-dataset-parser = {editable = true, path = "."}
 autopep8 = "*"
-isort = "*"
-pycodestyle = "*"
 pylint = "*"
+pycodestyle = "*"
+isort = "*"
 rope = "*"
-pipenv-setup = "*"
 pytest = "*"
-cx-freeze = "*"
+autoflake = "*"
+twine = "*"
 
 [packages]
-general-utils = {editable = true, path = "./../general-utils"}
 tqdm = "*"
 wget = "*"
 pandas = "*"

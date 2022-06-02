@@ -2,7 +2,7 @@ from logging import getLogger
 from pathlib import Path
 from typing import List, Tuple
 
-from general_utils import read_lines
+from speech_dataset_parser_core.utils import read_lines
 from tqdm import tqdm
 
 from speech_dataset_parser_old.data import PreData, PreDataList

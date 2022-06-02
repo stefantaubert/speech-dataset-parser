@@ -5,7 +5,7 @@ from multiprocessing import cpu_count
 from pathlib import Path
 from typing import List, Tuple
 
-from general_utils import (get_basename, get_filepaths, get_subfolders,
+from speech_dataset_parser_core.utils import (get_basename, get_filepaths, get_subfolders,
                            read_lines)
 from tqdm import tqdm
 
