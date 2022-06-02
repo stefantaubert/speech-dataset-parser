@@ -7,7 +7,7 @@ from typing import Generator, List, Optional, Tuple, cast
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
 
-from speech_dataset_parser_core.globals import GENDER_FEMALE
+from speech_dataset_parser.globals import GENDER_FEMALE
 from speech_dataset_parser_core.validation import (DirectoryAlreadyExistsError,
                                                    DirectoryNotExistsError,
                                                    FileNotExistsError,

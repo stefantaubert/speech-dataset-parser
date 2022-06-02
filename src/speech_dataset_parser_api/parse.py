@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Generator
 
-from speech_dataset_parser_core.parse import parse_generic_core
-from speech_dataset_parser_core.types import Entry
+from speech_dataset_parser.parse import parse_generic_core
+from speech_dataset_parser.types import Entry
 
 
 def parse_directory(directory: Path, tier_name: str, n_digits: int) -> Generator[Entry, None, None]:

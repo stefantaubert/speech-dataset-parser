@@ -43,7 +43,6 @@ tar xvfz *.tgz
 rm *.tgz
 ```
 
-
 /{lang}/{speaker_name},{gender},{accent}/{format}/grids and audios
 
 eg 
