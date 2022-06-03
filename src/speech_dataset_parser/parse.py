@@ -1,6 +1,6 @@
 from logging import getLogger
 from pathlib import Path
-from typing import Generator, Iterable, Literal, Optional, cast
+from typing import Generator, Iterable, Optional, cast
 
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
@@ -8,10 +8,10 @@ from tqdm import tqdm
 from speech_dataset_parser.types import GENDERS, Entry
 from speech_dataset_parser.utils import get_files_dict, get_subfolders
 
-PARTS_SEP = ","
+PARTS_SEP = ";"
 
 
-def parse_dataset(directory: Path, tier_name: str, n_digits: Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] = 16) -> Generator[Entry, None, None]:
+def parse_dataset(directory: Path, tier_name: str, n_digits: int = 16, encoding: str = "UTF-8") -> Generator[Entry, None, None]:
   if not directory.is_dir():
     raise ValueError("Parameter 'directory': Directory was not found!")
 
@@ -20,6 +20,9 @@ def parse_dataset(directory: Path, tier_name: str, n_digits: Literal[1, 2, 3, 4,
 
   if n_digits not in range(1, 17):
     raise ValueError("Parameter 'n_digits': Value needs to be in interval [0, 16]!")
+
+  if not isinstance(encoding, str):
+    raise ValueError("Parameter 'encoding': Value needs to be of type 'str'!")
 
   logger = getLogger(__name__)
 
@@ -64,7 +67,7 @@ def parse_dataset(directory: Path, tier_name: str, n_digits: Literal[1, 2, 3, 4,
 
       grid_file_abs = speaker_dir / grid_file_rel
       grid = TextGrid()
-      grid.read(grid_file_abs, n_digits)
+      grid.read(grid_file_abs, n_digits, encoding)
       tier = cast(Optional[IntervalTier], grid.getFirst(tier_name))
       if tier is None:
         logger.warning(f"{str(grid_file_rel)}: Tier '{tier_name}' does not exist! Ignored.")
@@ -74,7 +77,7 @@ def parse_dataset(directory: Path, tier_name: str, n_digits: Literal[1, 2, 3, 4,
       assert len(symbols) == len(intervals)
 
       audio_path = speaker_dir / audio_files[file_stem]
-      
+
       result = Entry(symbols, intervals, speaker_lang, speaker_name,
                      speaker_accent, speaker_gender, audio_path, grid.minTime, grid.maxTime)
       yield result

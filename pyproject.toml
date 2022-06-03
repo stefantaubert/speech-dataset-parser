@@ -1,9 +1,9 @@
 [project]
 name = "speech_dataset_parser"
 version = "0.0.1"
-description = "Library to parse speech datasets stored in a generic format. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included."
+description = "Library to parse speech datasets stored in a generic format based on TextGrids. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.6"
 license = {text = "MIT"}
 authors = [
   {name = "Stefan Taubert", email = "stefan.taubert@posteo.me"}
@@ -98,6 +98,22 @@ exclude = [
   "**/*_debug",
 ]
 useLibraryCodeForTypes = true
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py{36,37,38,39,310}
+isolated_build = True
+
+[testenv]
+deps = 
+  pytest
+commands = 
+  pytest
+  dataset-converter-cli
+  dataset-converter-cli -v
+"""
+
 
 [build-system]
 requires = [

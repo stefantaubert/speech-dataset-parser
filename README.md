@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/pypi/pyversions/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
 [![MIT](https://img.shields.io/github/license/stefantaubert/speech-dataset-parser.svg)](https://github.com/stefantaubert/speech-dataset-parser/blob/main/LICENSE)
 
-Library to parse speech datasets stored in a generic format. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included.
+Library to parse speech datasets stored in a generic format based on TextGrids. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included.
 Speech datasets consists of pairs of .TextGrid and .wav files. The TextGrids need to contain a tier which has each symbol separated in an interval, e.g., `T|h|i|s| |i|s| |a| |t|e|x|t|.`
 
 ## Generic Format
@@ -57,7 +57,7 @@ dataset-converter-cli [-h] [-v] {convert-ljs} ...
 ## CLI Example
 
 ```sh
-# Convert LJ Speech dataset
+# Convert LJ Speech dataset with symbolic links to the audio files
 dataset-converter-cli convert-ljs \
   "/data/datasets/LJSpeech-1.1" \
   "/tmp/ljs" \

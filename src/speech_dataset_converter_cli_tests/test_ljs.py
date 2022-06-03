@@ -2,7 +2,6 @@ import tempfile
 from logging import getLogger
 from pathlib import Path
 from shutil import rmtree
-from tempfile import gettempdir, gettempprefix
 
 from speech_dataset_converter_cli.convert_ljs import convert_to_generic
 

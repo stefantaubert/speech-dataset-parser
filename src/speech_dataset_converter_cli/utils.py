@@ -1,10 +1,5 @@
-import codecs
-from tqdm import tqdm
 from textgrid import Interval, IntervalTier, TextGrid
 from typing import Generator, List, Tuple, cast
-from shutil import copy2
-from logging import getLogger
-from argparse import ArgumentParser, Namespace
 import wave
 import os
 from collections import OrderedDict

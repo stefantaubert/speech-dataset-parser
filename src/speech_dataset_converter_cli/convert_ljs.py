@@ -1,12 +1,9 @@
 import codecs
-import wave
 from argparse import ArgumentParser, Namespace
-from logging import Logger, getLogger
+from logging import Logger
 from pathlib import Path
 from shutil import copy2
-from typing import Generator, List, Tuple, cast
 
-from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
 
 from speech_dataset_converter_cli.argparse_helper import (parse_codec, parse_existing_directory,
