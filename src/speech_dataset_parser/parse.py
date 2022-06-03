@@ -1,6 +1,6 @@
 from logging import getLogger
 from pathlib import Path
-from typing import Generator, Iterable, List, Literal, Optional, Tuple, cast
+from typing import Generator, Iterable, Literal, Optional, cast
 
 from textgrid import Interval, IntervalTier, TextGrid
 from tqdm import tqdm
@@ -74,7 +74,7 @@ def parse_dataset(directory: Path, tier_name: str, n_digits: Literal[1, 2, 3, 4,
       assert len(symbols) == len(intervals)
 
       audio_path = speaker_dir / audio_files[file_stem]
-
+      
       result = Entry(symbols, intervals, speaker_lang, speaker_name,
-                     speaker_accent, speaker_gender, audio_path)
+                     speaker_accent, speaker_gender, audio_path, grid.minTime, grid.maxTime)
       yield result

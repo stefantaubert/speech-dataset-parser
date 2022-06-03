@@ -2,11 +2,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Tuple
 
-# DatasetLJSpeech = Literal["ljs"]
-# DatasetArctic = Literal["arc"]
-
-# DatasetTypes = Literal[DatasetLJSpeech, DatasetArctic]
-
 GENDER_UNKNOWN = 0
 GENDER_MALE = 1
 GENDER_FEMALE = 2
@@ -30,4 +25,5 @@ class Entry:
   speaker_gender: int
   # absolute path
   audio_file_abs: Path
-  # TODO add duration read from grid
+  min_time: float
+  max_time: float

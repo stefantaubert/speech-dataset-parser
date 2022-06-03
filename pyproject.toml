@@ -1,9 +1,9 @@
 [project]
 name = "speech_dataset_parser"
 version = "0.0.1"
-description = "Library to parse speech datasets according to a predefined format."
+description = "Library to parse speech datasets stored in a generic format. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included."
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
   {name = "Stefan Taubert", email = "stefan.taubert@posteo.me"}
@@ -30,8 +30,6 @@ classifiers = [
   "Operating System :: Microsoft :: Windows",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.6",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",

@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Tuple
 
 from speech_dataset_parser_old.ljs import parse
 

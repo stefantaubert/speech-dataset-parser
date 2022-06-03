@@ -10,7 +10,6 @@ from textgrid.textgrid import Interval, IntervalTier
 from speech_dataset_parser_old.data import PreData, PreDataList, Symbols
 from speech_dataset_parser_old.gender import Gender
 from speech_dataset_parser_old.language import Language
-from speech_dataset_parser_old.text_format import TextFormat
 
 TIER_NAME = "transcript"
 TIER_NAME = "words-ipa"
