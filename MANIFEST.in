@@ -1,0 +1,9 @@
+prune src/speech_dataset_parser_old/
+prune src/speech_dataset_parser_old_tests/
+exclude deploy.sh
+exclude playground.sh
+exclude pylintrc
+exclude Pipfile
+exclude Pipfile.lock
+exclude .gitignore
+exclude MANIFEST.in

@@ -54,13 +54,13 @@ dataset-converter-cli = "speech_dataset_converter_cli.cli:run_prod"
 where = ["src"]
 include = [
   "speech_dataset_parser",
-  "speech_dataset_parser_tests",
-  "speech_dataset_parser_tests.*",
   "speech_dataset_converter_cli",
-  "speech_dataset_converter_cli_tests",
-  "speech_dataset_converter_cli_tests.*",
 ]
 exclude = [
+  "speech_dataset_parser_tests",
+  "speech_dataset_parser_tests.*",
+  "speech_dataset_converter_cli_tests",
+  "speech_dataset_converter_cli_tests.*",
   "speech_dataset_parser_debug",
   "speech_dataset_converter_cli_debug",
   "speech_dataset_parser_old",
@@ -105,7 +105,7 @@ useLibraryCodeForTypes = true
 legacy_tox_ini = """
 [tox]
 envlist = py{37,38,39,310}
-isolated_build = True
+isolated_build = true
 
 [testenv]
 deps = 
@@ -115,7 +115,6 @@ commands =
   dataset-converter-cli
   dataset-converter-cli -v
 """
-
 
 [build-system]
 requires = [
