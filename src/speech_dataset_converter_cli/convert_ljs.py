@@ -11,7 +11,8 @@ from speech_dataset_converter_cli.argparse_helper import (parse_codec, parse_exi
                                                           parse_non_existing_directory)
 from speech_dataset_converter_cli.utils import create_grid
 from speech_dataset_parser import GENDER_FEMALE
-from speech_dataset_parser.parse import PARTS_SEP
+from speech_dataset_parser.parse import (DEFAULT_ENCODING, DEFAULT_N_DIGITS, DEFAULT_TIER_NAME,
+                                         PARTS_SEP)
 
 
 def get_convert_ljs_to_generic_parser(parser: ArgumentParser):
@@ -21,11 +22,11 @@ def get_convert_ljs_to_generic_parser(parser: ArgumentParser):
   parser.add_argument("output_directory", type=parse_non_existing_directory, metavar="OUTPUT-DIRECTORY",
                       help="output directory")
   parser.add_argument("-t", "--tier", type=parse_non_empty_or_whitespace, metavar="TIER-NAME",
-                      help="name of the output tier", default="transcription")
+                      help="name of the output tier", default=DEFAULT_TIER_NAME)
   parser.add_argument("-e", "--encoding", type=parse_codec, metavar="CODEC",
-                      help="encoding of output grids", default="UTF-8")
+                      help="encoding of output grids", default=DEFAULT_ENCODING)
   parser.add_argument("-d", "--n-digits", type=int, choices=range(17), metavar="DIGITS",
-                      help="number of digits in textgrid", default=16)
+                      help="number of digits in textgrid", default=DEFAULT_N_DIGITS)
   parser.add_argument("-s", "--symlink", action="store_true",
                       help="create symbolic links to the audio files instead of copies")
   return convert_to_generic_ns

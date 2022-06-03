@@ -9,9 +9,12 @@ from speech_dataset_parser.types import GENDERS, Entry
 from speech_dataset_parser.utils import get_files_dict, get_subfolders
 
 PARTS_SEP = ";"
+DEFAULT_N_DIGITS = 16
+DEFAULT_TIER_NAME = "transcript"
+DEFAULT_ENCODING = "UTF-8"
 
 
-def parse_dataset(directory: Path, tier_name: str, n_digits: int = 16, encoding: str = "UTF-8") -> Generator[Entry, None, None]:
+def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits: int = DEFAULT_N_DIGITS, encoding: str = DEFAULT_ENCODING) -> Generator[Entry, None, None]:
   if not directory.is_dir():
     raise ValueError("Parameter 'directory': Directory was not found!")
 
