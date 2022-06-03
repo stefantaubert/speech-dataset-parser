@@ -19,7 +19,7 @@ Example: `LJ Speech/Linda Johnson;2;eng;North American/wavs/...`
 Speaker names can be any string (excluding `;` symbols).
 Genders are defined via their [ISO/IEC 5218 Code](https://en.wikipedia.org/wiki/ISO/IEC_5218).
 Languages are defined via their [ISO 639-2 Code](https://www.loc.gov/standards/iso639-2/php/code_list.php).
-Accents are optional and can be any string (excluding `;` symbols)
+Accents are optional and can be any string (excluding `;` symbols).
 
 ## Installation
 
