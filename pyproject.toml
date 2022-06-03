@@ -1,5 +1,5 @@
 [project]
-name = "speech_dataset_parser"
+name = "speech-dataset-parser"
 version = "0.0.1"
 description = "Library to parse speech datasets stored in a generic format based on TextGrids. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included."
 readme = "README.md"
