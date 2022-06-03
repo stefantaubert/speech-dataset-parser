@@ -14,6 +14,7 @@ from speech_dataset_converter_cli.argparse_helper import get_optional, parse_pat
 from speech_dataset_converter_cli.convert_ljs import get_convert_ljs_to_generic_parser
 from speech_dataset_converter_cli.logging_configuration import (configure_root_logger,
                                                                 get_file_logger,
+                                                                init_and_return_loggers,
                                                                 try_init_file_logger)
 
 __version__ = version("speech_dataset_parser")
@@ -49,7 +50,7 @@ def _init_parser():
   )
   main_parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
   subparsers = main_parser.add_subparsers(help="description")
-  default_log_path = Path(gettempdir()) / "txt-utils.log"
+  default_log_path = Path(gettempdir()) / "dataset-converter-cli.log"
 
   methods = get_parsers()
   for command, description, method in methods:
@@ -111,7 +112,9 @@ def parse_args(args: List[str]) -> None:
     flogger.debug(f"Parsed arguments: {str(ns)}")
 
     start = perf_counter()
-    success = invoke_handler(ns)
+
+    cmd_flogger, cmd_logger = init_and_return_loggers(__name__)
+    success = invoke_handler(ns, cmd_flogger, cmd_logger)
 
     if success:
       logger.info(f"{CONSOLE_PNT_GREEN}Everything was successful!{CONSOLE_PNT_RST}")
@@ -145,11 +148,11 @@ def run_prod():
 
 
 def debug_file_exists():
-  return (Path(gettempdir()) / "speech-dataset-converter-debug").is_file()
+  return (Path(gettempdir()) / "dataset-converter-cli-debug").is_file()
 
 
 def create_debug_file():
-  (Path(gettempdir()) / "speech-dataset-converter-debug").write_text("", "UTF-8")
+  (Path(gettempdir()) / "dataset-converter-cli-debug").write_text("", "UTF-8")
 
 
 if __name__ == "__main__":

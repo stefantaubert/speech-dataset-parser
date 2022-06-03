@@ -44,14 +44,25 @@ The resulting `entries` list contains dataclass instances with these properties:
 - `min_time: float`
 - `max_time: float`
 
+## CLI Usage
+
+```sh
+dataset-converter-cli [-h] [-v] {convert-ljs} ...
+```
+
 ## CLI Features
 
 - `convert-ljs`: convert LJ Speech dataset to a generic dataset
 
-## CLI Usage
+## CLI Example
 
 ```sh
-dataset-converter-cli
+# Convert LJ Speech dataset
+dataset-converter-cli convert-ljs \
+  "/data/datasets/LJSpeech-1.1" \
+  "/tmp/ljs" \
+  --tier "Symbols" \
+  --symlink
 ```
 
 ## Dependencies

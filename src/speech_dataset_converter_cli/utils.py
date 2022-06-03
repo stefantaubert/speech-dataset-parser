@@ -1,3 +1,11 @@
+import codecs
+from tqdm import tqdm
+from textgrid import Interval, IntervalTier, TextGrid
+from typing import Generator, List, Tuple, cast
+from shutil import copy2
+from logging import getLogger
+from argparse import ArgumentParser, Namespace
+import wave
 import os
 from collections import OrderedDict
 from pathlib import Path
@@ -69,3 +77,32 @@ def get_filenames(parent_dir: Path) -> List[Path]:
   filenames.sort()
   filenames = [Path(filename) for filename in filenames]
   return filenames
+
+
+def get_wav_duration_s(wav_file: Path) -> float:
+  with open(wav_file, mode="rb") as f:
+    with cast(wave.Wave_read, wave.open(f, "rb")) as wav:
+      duration_s = wav.getnframes() / wav.getframerate()
+  return duration_s
+
+
+def create_grid(wav_file: Path, text: str, tier_name: str, n_digits: int) -> TextGrid:
+  assert wav_file.is_file()
+  assert len(text) > 0
+  duration_s = get_wav_duration_s(wav_file)
+  duration_s = round(duration_s, n_digits)
+  result = TextGrid(None, 0, duration_s)
+  tier = IntervalTier(tier_name, 0, duration_s)
+  symbols = list(text)
+  tier.intervals.extend(get_intervals(symbols, duration_s, n_digits))
+  result.append(tier)
+  return result
+
+
+def get_intervals(symbols: List[str], total_duration_s: float, n_digits: int) -> Generator[Interval, None, None]:
+  symbols_count = len(symbols)
+  for added_symbols_count, symbol in enumerate(symbols):
+    min_time = added_symbols_count / symbols_count * total_duration_s
+    max_time = (added_symbols_count + 1) / symbols_count * total_duration_s
+    symbol_interval = Interval(round(min_time, n_digits), round(max_time, n_digits), symbol)
+    yield symbol_interval
