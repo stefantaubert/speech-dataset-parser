@@ -1,12 +1,12 @@
-from textgrid import Interval, IntervalTier, TextGrid
-from typing import Generator, List, Tuple, cast
-import wave
 import os
+import wave
 from collections import OrderedDict
 from pathlib import Path
 from typing import Generator, List
 from typing import OrderedDict as ODType
-from typing import Set, Tuple
+from typing import Set, Tuple, cast
+
+from textgrid import Interval, IntervalTier, TextGrid
 
 
 def get_files_dict(directory: Path, filetypes: Set[str]) -> ODType[str, Path]:

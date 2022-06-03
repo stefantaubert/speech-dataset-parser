@@ -2,7 +2,6 @@ import argparse
 import platform
 import sys
 from argparse import ArgumentParser
-from importlib.metadata import version
 from logging import getLogger
 from pathlib import Path
 from pkgutil import iter_modules
@@ -17,7 +16,16 @@ from speech_dataset_converter_cli.logging_configuration import (configure_root_l
                                                                 init_and_return_loggers,
                                                                 try_init_file_logger)
 
-__version__ = version("speech_dataset_parser")
+
+def get_version() -> str:
+  if sys.version_info[1] < 8:
+    from importlib_metadata import version
+  else:
+    from importlib.metadata import version
+  return version("speech_dataset_parser")
+
+
+__version__ = get_version()
 
 INVOKE_HANDLER_VAR = "invoke_handler"
 
