@@ -3,9 +3,9 @@
 [![PyPI](https://img.shields.io/pypi/v/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
 [![PyPI](https://img.shields.io/pypi/pyversions/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
 [![MIT](https://img.shields.io/github/license/stefantaubert/speech-dataset-parser.svg)](https://github.com/stefantaubert/speech-dataset-parser/blob/main/LICENSE)
-[![MIT](https://img.shields.io/pypi/wheel/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
-[![MIT](https://img.shields.io/pypi/implementation/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
-[![MIT](https://img.shields.io/github/commits-since/stefantaubert/speech-dataset-parser/latest/master.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
+[![PyPI](https://img.shields.io/pypi/wheel/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
+[![PyPI](https://img.shields.io/pypi/implementation/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
+[![PyPI](https://img.shields.io/github/commits-since/stefantaubert/speech-dataset-parser/latest/master.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
 
 Library to parse speech datasets stored in a generic format based on TextGrids. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included.
 Speech datasets consists of pairs of .TextGrid and .wav files. The TextGrids need to contain a tier which has each symbol separated in an interval, e.g., `T|h|i|s| |i|s| |a| |t|e|x|t|.`
