@@ -5,8 +5,7 @@ from multiprocessing import cpu_count
 from pathlib import Path
 from typing import List, Tuple
 
-from speech_dataset_parser_core.utils import (get_basename, get_filepaths, get_subfolders,
-                           read_lines)
+from speech_dataset_parser_core.utils import get_basename, get_filepaths, get_subfolders, read_lines
 from tqdm import tqdm
 
 from speech_dataset_parser_old.data import PreData, PreDataList
