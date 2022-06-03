@@ -10,7 +10,7 @@ from speech_dataset_parser.utils import get_files_dict, get_subfolders
 
 PARTS_SEP = ";"
 DEFAULT_N_DIGITS = 16
-DEFAULT_TIER_NAME = "transcript"
+DEFAULT_TIER_NAME = "transcription"
 DEFAULT_ENCODING = "UTF-8"
 
 
