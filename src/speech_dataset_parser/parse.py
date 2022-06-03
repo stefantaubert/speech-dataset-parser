@@ -12,9 +12,10 @@ PARTS_SEP = ";"
 DEFAULT_N_DIGITS = 16
 DEFAULT_TIER_NAME = "transcription"
 DEFAULT_ENCODING = "UTF-8"
+DEFAULT_AUDIO_FORMAT = ".wav"
 
 
-def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits: int = DEFAULT_N_DIGITS, encoding: str = DEFAULT_ENCODING) -> Generator[Entry, None, None]:
+def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits: int = DEFAULT_N_DIGITS, encoding: str = DEFAULT_ENCODING, audio_format: str = DEFAULT_AUDIO_FORMAT) -> Generator[Entry, None, None]:
   if not directory.is_dir():
     raise ValueError("Parameter 'directory': Directory was not found!")
 
@@ -60,7 +61,7 @@ def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits:
     if len(speaker_parts) == 4:
       speaker_accent = speaker_parts[3]
 
-    audio_files = get_files_dict(speaker_dir, {".wav"})
+    audio_files = get_files_dict(speaker_dir, {audio_format})
     grid_files = get_files_dict(speaker_dir, {".TextGrid"})
 
     for file_stem, grid_file_rel in tqdm(grid_files.items()):
