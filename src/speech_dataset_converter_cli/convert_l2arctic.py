@@ -80,7 +80,6 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       continue
 
     name, gender, accent, _, _ = parts
-    logger.info(f"Parsing {name} ({readme_line_nr - 34}/{len(lines)})...")
     speaker_gender = GENDER_MALE if gender == "M" else GENDER_FEMALE
     speaker_dir = directory / name
     wav_dir = speaker_dir / "wav"
@@ -91,7 +90,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         f"{name}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{language}{PARTS_SEP}{accent}"
 
     txt_file_name: str
-    for txt_file_name in tqdm(txt_files, desc="Creating files", unit=" file(s)"):
+    for txt_file_name in tqdm(txt_files, desc=f"Converting {name} ({readme_line_nr - 34}/{len(lines)})", unit=" file(s)"):
       txt_file = txt_dir / txt_file_name
       wav_file_in = wav_dir / f"{Path(txt_file_name).stem}.wav"
       if not wav_file_in.is_file():

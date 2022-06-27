@@ -66,7 +66,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
 
   # strip last empty line
   lines = metadata_content.strip().splitlines()
-  for line_nr, line in enumerate(tqdm(lines, desc="Creating files", unit=" file(s)"), start=1):
+  for line_nr, line in enumerate(tqdm(lines, desc="Converting", unit=" file(s)"), start=1):
     parts = line.split('|')
     if not len(parts) == 3:
       flogger.error(f"Line {line_nr}: '{line}' couldn't be parsed! Ignored.")
