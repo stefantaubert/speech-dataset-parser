@@ -9,8 +9,9 @@ LOCAL_PATH = Path('/data/datasets/LJSpeech-1.1')
 
 
 def test_all_utterances_are_included():
-  output_path = Path(tempfile.mkdtemp("-sdc-tests"))
-  success = convert_to_generic(LOCAL_PATH, True, 16, "test", output_path, "UTF-8", getLogger())
+  output_path = Path(tempfile.mkdtemp("-tests", "sdc"))
+  success = convert_to_generic(LOCAL_PATH, True, 16, "test", output_path,
+                               "UTF-8", getLogger(), getLogger())
   rmtree(output_path)
   assert success
 

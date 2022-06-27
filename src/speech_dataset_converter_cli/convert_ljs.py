@@ -38,12 +38,12 @@ def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> boo
     return False
 
   successful = convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
-                                  ns.tier, ns.output_directory, ns.encoding, flogger)
+                                  ns.tier, ns.output_directory, ns.encoding, flogger, logger)
 
   return successful
 
 
-def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, output_directory: Path, encoding: str, logger: Logger) -> bool:
+def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, output_directory: Path, encoding: str, flogger: Logger, logger: Logger) -> bool:
   speaker_name = 'Linda Johnson'
   accent_name = "North American"
   language = "eng"
@@ -69,7 +69,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   for line_nr, line in enumerate(tqdm(lines, desc="Creating files", unit=" file(s)"), start=1):
     parts = line.split('|')
     if not len(parts) == 3:
-      logger.error(f"Line {line_nr}: '{line}' couldn't be parsed! Ignored.")
+      flogger.error(f"Line {line_nr}: '{line}' couldn't be parsed! Ignored.")
       lines_with_errors += 1
       continue
     # parts[1] contains years, in parts[2] the years are written out
@@ -77,19 +77,19 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     basename = parts[0]
     wav_file_abs = wav_dir / f'{basename}.wav'
     if not wav_file_abs.is_file():
-      logger.error(f"Line {line_nr}: File '{str(wav_file_abs)}' was not found. Ignored.")
+      flogger.error(f"Line {line_nr}: File '{str(wav_file_abs)}' was not found. Ignored.")
       lines_with_errors += 1
       continue
 
     text = parts[2]
     if len(text) == 0:
-      logger.error(f"Line {line_nr}: Empty line. Ignored.")
+      flogger.error(f"Line {line_nr}: Empty line. Ignored.")
       lines_with_errors += 1
       continue
 
     wav_file_relative = wav_file_abs.relative_to(directory)
 
-    #logger.debug(f"Processing '{str(wav_file_relative)}'...")
+    #flogger.debug(f"Processing '{str(wav_file_relative)}'...")
     wav_file_in = directory / wav_file_relative
     assert wav_file_in.is_file()
 
@@ -100,16 +100,16 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     try:
       grid = create_grid(wav_file_in, text, tier, n_digits)
     except Exception as ex:
-      logger.debug(ex)
-      logger.error(f"Audio file \"{wav_file_in.absolute()}\" couldn't be read! Ignored.")
+      flogger.debug(ex)
+      flogger.error(f"Audio file \"{wav_file_in.absolute()}\" couldn't be read! Ignored.")
       lines_with_errors += 1
       continue
 
     try:
       grid_file_out.parent.mkdir(parents=True, exist_ok=True)
     except Exception as ex:
-      logger.debug(ex)
-      logger.error(
+      flogger.debug(ex)
+      flogger.error(
         f"Parent folder \"{grid_file_out.parent.absolute()}\" for grid \"{grid_file_out.absolute()}\" couldn't be created! Ignored.")
       lines_with_errors += 1
       continue
@@ -118,8 +118,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       with codecs.open(grid_file_out, 'w', encoding) as file:
         grid.write(file)
     except Exception as ex:
-      logger.debug(ex)
-      logger.error(f"Grid \"{grid_file_out.absolute()}\" couldn't be saved! Ignored.")
+      flogger.debug(ex)
+      flogger.error(f"Grid \"{grid_file_out.absolute()}\" couldn't be saved! Ignored.")
       lines_with_errors += 1
       continue
 
@@ -127,8 +127,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       try:
         wav_file_out.symlink_to(wav_file_in)
       except Exception as ex:
-        logger.debug(ex)
-        logger.error(
+        flogger.debug(ex)
+        flogger.error(
           f"Symbolic link to audio file \"{wav_file_in.absolute()}\" at \"{wav_file_out.absolute()}\" couldn't be created! Ignored.")
         lines_with_errors += 1
         continue
@@ -136,8 +136,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       try:
         copy2(wav_file_in, wav_file_out)
       except Exception as ex:
-        logger.debug(ex)
-        logger.error(
+        flogger.debug(ex)
+        flogger.error(
           f"Audio file \"{wav_file_in.absolute()}\" couldn't be copied to \"{wav_file_out.absolute()}\"! Ignored.")
         lines_with_errors += 1
         continue
