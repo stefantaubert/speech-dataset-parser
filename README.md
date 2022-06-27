@@ -56,6 +56,7 @@ dataset-converter-cli [-h] [-v] {convert-ljs} ...
 ## CLI Features
 
 - `convert-ljs`: convert LJ Speech dataset to a generic dataset
+- `convert-l2arctic`: convert L2-ARCTIC dataset to a generic dataset
 
 ## CLI Example
 

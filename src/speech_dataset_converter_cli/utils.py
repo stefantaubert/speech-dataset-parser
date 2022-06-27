@@ -66,11 +66,9 @@ def get_filepaths(parent_dir: Path) -> List[Path]:
   return res
 
 
-def get_filenames(parent_dir: Path) -> List[Path]:
+def get_filenames(parent_dir: Path) -> List[str]:
   assert parent_dir.is_dir()
   _, _, filenames = next(os.walk(parent_dir))
-  filenames.sort()
-  filenames = [Path(filename) for filename in filenames]
   return filenames
 
 

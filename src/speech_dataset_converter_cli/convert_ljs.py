@@ -101,7 +101,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       grid = create_grid(wav_file_in, text, tier, n_digits)
     except Exception as ex:
       logger.debug(ex)
-      logger.error(f"Audio file \"{wav_file_in.absolute()}\" couldn't be read!")
+      logger.error(f"Audio file \"{wav_file_in.absolute()}\" couldn't be read! Ignored.")
       lines_with_errors += 1
       continue
 
@@ -110,7 +110,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     except Exception as ex:
       logger.debug(ex)
       logger.error(
-        f"Parent folder \"{grid_file_out.parent.absolute()}\" for grid \"{grid_file_out.absolute()}\" couldn't be created!")
+        f"Parent folder \"{grid_file_out.parent.absolute()}\" for grid \"{grid_file_out.absolute()}\" couldn't be created! Ignored.")
       lines_with_errors += 1
       continue
 
@@ -119,7 +119,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         grid.write(file)
     except Exception as ex:
       logger.debug(ex)
-      logger.error(f"Grid \"{grid_file_out.absolute()}\" couldn't be saved!")
+      logger.error(f"Grid \"{grid_file_out.absolute()}\" couldn't be saved! Ignored.")
       lines_with_errors += 1
       continue
 
@@ -129,7 +129,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       except Exception as ex:
         logger.debug(ex)
         logger.error(
-          f"Symbolic link to audio file \"{wav_file_in.absolute()}\" at \"{wav_file_out.absolute()}\" couldn't be created!")
+          f"Symbolic link to audio file \"{wav_file_in.absolute()}\" at \"{wav_file_out.absolute()}\" couldn't be created! Ignored.")
         lines_with_errors += 1
         continue
     else:
@@ -138,7 +138,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       except Exception as ex:
         logger.debug(ex)
         logger.error(
-          f"Audio file \"{wav_file_in.absolute()}\" couldn't be copied to \"{wav_file_out.absolute()}\"!")
+          f"Audio file \"{wav_file_in.absolute()}\" couldn't be copied to \"{wav_file_out.absolute()}\"! Ignored.")
         lines_with_errors += 1
         continue
 
