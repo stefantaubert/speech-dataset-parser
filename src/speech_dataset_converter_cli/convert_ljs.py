@@ -49,8 +49,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   language = "eng"
   gender = GENDER_FEMALE
 
-  speaker_dir_out_abs = output_directory / \
-      f"{speaker_name}{PARTS_SEP}{gender}{PARTS_SEP}{language}{PARTS_SEP}{accent_name}"
+  speaker_dir_name = f"{speaker_name}{PARTS_SEP}{gender}{PARTS_SEP}{language}{PARTS_SEP}{accent_name}"
+  speaker_dir_out_abs = output_directory / speaker_dir_name
 
   metadata_csv = directory / 'metadata.csv'
   wav_dir = directory / 'wavs'
@@ -93,9 +93,9 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     wav_file_in = directory / wav_file_relative
     assert wav_file_in.is_file()
 
-    wav_file_out = speaker_dir_out_abs / wav_file_relative
-    grid_file_out = speaker_dir_out_abs / \
-        wav_file_relative.parent / f"{wav_file_relative.stem}.TextGrid"
+    stem_out = f"{speaker_dir_name};{wav_file_relative.stem}"
+    wav_file_out = speaker_dir_out_abs / f"{stem_out}.wav"
+    grid_file_out = speaker_dir_out_abs / f"{stem_out}.TextGrid"
 
     try:
       grid = create_grid(wav_file_in, text, tier, n_digits)
