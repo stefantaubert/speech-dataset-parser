@@ -86,19 +86,21 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     txt_dir = speaker_dir / "transcript"
     txt_files = get_filenames(txt_dir)
 
-    speaker_dir_out_abs = output_directory / \
-        f"{name}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{language}{PARTS_SEP}{accent}"
+    speaker_dir_name = f"{name}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{language}{PARTS_SEP}{accent}"
+    speaker_dir_out_abs = output_directory / speaker_dir_name
 
     txt_file_name: str
     for txt_file_name in tqdm(txt_files, desc=f"Converting {name} ({readme_line_nr - 34}/{len(lines)})", unit=" file(s)"):
-      txt_file = txt_dir / txt_file_name
-      wav_file_in = wav_dir / f"{Path(txt_file_name).stem}.wav"
+      stem_in = Path(txt_file_name).stem
+      txt_file = txt_dir / f"{stem_in}.txt"
+      wav_file_in = wav_dir / f"{stem_in}.wav"
       if not wav_file_in.is_file():
         flogger.error(f"No .wav file found for transcript '{txt_file_name}'! Ignored.")
         continue
 
-      wav_file_out = speaker_dir_out_abs / wav_file_in.name
-      grid_file_out = speaker_dir_out_abs / f"{wav_file_in.stem}.TextGrid"
+      stem_out = f"{speaker_dir_name};{stem_in}"
+      wav_file_out = speaker_dir_out_abs / f"{stem_out}.wav"
+      grid_file_out = speaker_dir_out_abs / f"{stem_out}.TextGrid"
 
       try:
         text = txt_file.read_text("UTF-8")
