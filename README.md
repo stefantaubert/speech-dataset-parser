@@ -57,6 +57,7 @@ dataset-converter-cli [-h] [-v] {convert-ljs} ...
 
 - `convert-ljs`: convert LJ Speech dataset to a generic dataset
 - `convert-l2arctic`: convert L2-ARCTIC dataset to a generic dataset
+- `convert-thchs`: convert THCHS dataset to a generic dataset
 
 ## CLI Example
 
@@ -71,9 +72,9 @@ dataset-converter-cli convert-ljs \
 
 ## Dependencies
 
-- tqdm
-- TextGrid>=1.5
-- ordered_set>=4.1.0
+- `tqdm`
+- `TextGrid>=1.5`
+- `ordered_set>=4.1.0`
 
 ## Roadmap
 
