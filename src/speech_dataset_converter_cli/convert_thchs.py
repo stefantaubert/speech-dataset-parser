@@ -17,9 +17,9 @@ from speech_dataset_parser.types import GENDER_MALE
 
 
 def get_convert_thchs_to_generic_parser(parser: ArgumentParser):
-  parser.description = "This command converts the THCHS dataset to a generic one."
+  parser.description = "This command converts the THCHS-30 dataset to a generic one."
   parser.add_argument("directory", type=parse_existing_directory, metavar="THCHS-DIRECTORY",
-                      help="directory containing the THCHS content")
+                      help="directory containing the THCHS-30 content")
   parser.add_argument("output_directory", type=parse_non_existing_directory, metavar="OUTPUT-DIRECTORY",
                       help="output directory")
   parser.add_argument("-t", "--tier", type=parse_non_empty_or_whitespace, metavar="TIER-NAME",
@@ -104,9 +104,10 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         lines_with_errors += 1
         continue
 
-      # remove "=" from chinese transcription because it is not correct
+      # remove "l =" from transcription because it is not Chinese
+      # 徐 希君 肖 金生 刘 文华 屈 永利 王开 宇 骆 瑛 等 也 被 分别 判处 l = 六年 至 十 五年 有期徒刑
       # occurs only in sentences with nr. 374, e.g. B22_374
-      chinese = chinese.replace("= ", '')
+      chinese = chinese.replace(" l = ", " ")
       is_question = str.endswith(chinese, QUESTION_PARTICLE_1) or str.endswith(
         chinese, QUESTION_PARTICLE_2)
       if is_question:

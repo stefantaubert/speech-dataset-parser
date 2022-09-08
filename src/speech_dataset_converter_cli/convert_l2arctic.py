@@ -9,8 +9,7 @@ from tqdm import tqdm
 from speech_dataset_converter_cli.argparse_helper import (parse_codec, parse_existing_directory,
                                                           parse_non_empty_or_whitespace,
                                                           parse_non_existing_directory)
-from speech_dataset_converter_cli.utils import (create_grid, get_filenames, get_filepaths,
-                                                get_subfolders)
+from speech_dataset_converter_cli.utils import create_grid, get_filenames
 from speech_dataset_parser import GENDER_FEMALE
 from speech_dataset_parser.parse import (DEFAULT_ENCODING, DEFAULT_N_DIGITS, DEFAULT_TIER_NAME,
                                          PARTS_SEP)

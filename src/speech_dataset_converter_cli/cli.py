@@ -46,7 +46,7 @@ def formatter(prog):
 def get_parsers() -> Parsers:
   yield "convert-ljs", "convert LJ Speech dataset to a generic dataset", get_convert_ljs_to_generic_parser
   yield "convert-l2arctic", "convert L2-ARCTIC dataset to a generic dataset", get_convert_l2arctic_to_generic_parser
-  yield "convert-thchs", "convert THCHS dataset to a generic dataset", get_convert_thchs_to_generic_parser
+  yield "convert-thchs", "convert THCHS-30 dataset to a generic dataset", get_convert_thchs_to_generic_parser
 
 
 def print_features():
