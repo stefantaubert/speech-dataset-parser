@@ -13,9 +13,10 @@ DEFAULT_N_DIGITS = 16
 DEFAULT_TIER_NAME = "transcription"
 DEFAULT_ENCODING = "UTF-8"
 DEFAULT_AUDIO_FORMAT = ".wav"
+DEFAULT_SILENT = False
 
 
-def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits: int = DEFAULT_N_DIGITS, encoding: str = DEFAULT_ENCODING, audio_format: str = DEFAULT_AUDIO_FORMAT) -> Generator[Entry, None, None]:
+def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits: int = DEFAULT_N_DIGITS, encoding: str = DEFAULT_ENCODING, audio_format: str = DEFAULT_AUDIO_FORMAT, silent: bool = DEFAULT_SILENT) -> Generator[Entry, None, None]:
   if not directory.is_dir():
     raise ValueError("Parameter 'directory': Directory was not found!")
 
@@ -31,8 +32,11 @@ def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits:
   logger = getLogger(__name__)
 
   speaker_dirs = get_subfolders(directory)
+  iterator = speaker_dirs
+  if not silent:
+    iterator = tqdm(speaker_dirs, desc="Parsing dataset", unit=" speaker(s)")
 
-  for speaker_dir in speaker_dirs:
+  for speaker_dir in iterator:
     speaker_parts = speaker_dir.name.split(PARTS_SEP)
     if len(speaker_parts) not in {3, 4}:
       logger.warning(
@@ -64,7 +68,7 @@ def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits:
     audio_files = get_files_dict(speaker_dir, {audio_format})
     grid_files = get_files_dict(speaker_dir, {".TextGrid"})
 
-    for file_stem, grid_file_rel in tqdm(grid_files.items()):
+    for file_stem, grid_file_rel in grid_files.items():
       if file_stem not in audio_files:
         logger.warning(f"{str(grid_file_rel)}: Audio file was not found. Ignored.")
         continue
