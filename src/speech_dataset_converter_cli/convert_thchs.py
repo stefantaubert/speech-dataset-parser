@@ -92,8 +92,6 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         flogger.error(
           f"Line {line_nr}: '{line}' in file \"{words_path.absolute()}\" couldn't be parsed! Ignored.")
         lines_with_errors += 1
-      if name == "A11_153":
-        print("x")
       speaker_gender = GENDER_MALE if speaker_name in MALE_SPEAKERS else GENDER_FEMALE
       # nr = int(nr)
       # speaker_name_letter = speaker_name[0]
