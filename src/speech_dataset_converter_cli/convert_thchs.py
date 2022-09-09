@@ -92,6 +92,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         flogger.error(
           f"Line {line_nr}: '{line}' in file \"{words_path.absolute()}\" couldn't be parsed! Ignored.")
         lines_with_errors += 1
+      if name == "A11_153":
+        print("x")
       speaker_gender = GENDER_MALE if speaker_name in MALE_SPEAKERS else GENDER_FEMALE
       # nr = int(nr)
       # speaker_name_letter = speaker_name[0]
@@ -104,6 +106,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         lines_with_errors += 1
         continue
 
+      # some lines end with a space, e.g. train L5: A11_102
+      chinese = chinese.rstrip()
       # remove "l =" from transcription because it is not Chinese
       # 徐 希君 肖 金生 刘 文华 屈 永利 王开 宇 骆 瑛 等 也 被 分别 判处 l = 六年 至 十 五年 有期徒刑
       # occurs only in sentences with nr. 374, e.g. B22_374
