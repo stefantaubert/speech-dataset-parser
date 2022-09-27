@@ -47,11 +47,17 @@ def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> boo
 QUESTION_PARTICLE_1 = '吗'
 QUESTION_PARTICLE_2 = '呢'
 
-MALE_SPEAKERS = {"A8", "A9", "A33", "A35", "B8", "B21", "B34", "C8", "D8"}
+# MALE_SPEAKERS = {"A8", "A9", "A33", "A35", "B8", "B21", "B34", "C8", "D8"}
+MALE_SPEAKERS = {"8", "9", "21", "33", "34", "35"}
+
+# ACCENTS = {
+#   "D4": "Mandarin",  # Standard Mandarin
+#   "D6": "Mandarin",  # Standard Mandarin
+# }
 
 ACCENTS = {
-  "D4": "Mandarin",  # Standard Mandarin
-  "D6": "Mandarin",  # Standard Mandarin
+  "4": "Mandarin",  # Standard Mandarin
+  "6": "Mandarin",  # Standard Mandarin
 }
 
 
@@ -87,18 +93,18 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       pos = line.find(' ')
       try:
         name, chinese = line[:pos], line[pos + 1:]
-        speaker_name, nr = name.split("_")
+        speaker_name_part, audio_nr = name.split("_")
       except Exception as ex:
         flogger.error(
           f"Line {line_nr}: '{line}' in file \"{words_path.absolute()}\" couldn't be parsed! Ignored.")
         lines_with_errors += 1
-      speaker_gender = GENDER_MALE if speaker_name in MALE_SPEAKERS else GENDER_FEMALE
       # nr = int(nr)
-      # speaker_name_letter = speaker_name[0]
-      # speaker_name_number = int(speaker_name[1:])
-      wav_file_in = wavs_dir / speaker_name / f"{name}.wav"
+      speaker_name_letter = speaker_name_part[0]
+      speaker_name_number = int(speaker_name_part[1:])
+      speaker_gender = GENDER_MALE if speaker_name_number in MALE_SPEAKERS else GENDER_FEMALE
+      wav_file_in = wavs_dir / speaker_name_part / f"{name}.wav"
       if not wav_file_in.exists():
-        wav_file_in = wavs_dir / speaker_name / f"{name}.WAV"
+        wav_file_in = wavs_dir / speaker_name_part / f"{name}.WAV"
       if not wav_file_in.exists():
         logger.info(f"Did not found wav file: \"{wav_file_in.absolute()}\"! Skipped.")
         lines_with_errors += 1
@@ -117,10 +123,9 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       else:
         chinese += "。"
 
-      speaker_dir_name = f"{speaker_name}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{lang}"
-      accent_name = speaker_name
-      if speaker_name in ACCENTS.keys():
-        accent_name = ACCENTS[speaker_name]
+      speaker_dir_name = f"{speaker_name_number}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{lang}"
+      if speaker_name_number in ACCENTS.keys():
+        accent_name = ACCENTS[speaker_name_number]
         speaker_dir_name += f"{PARTS_SEP}{accent_name}"
       speaker_dir_out_abs = output_directory / speaker_dir_name
 

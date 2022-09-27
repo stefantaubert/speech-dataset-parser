@@ -16,3 +16,5 @@ def test_all_utterances_are_included():
                                "UTF-8", getLogger(), getLogger())
   rmtree(output_path)
   assert success
+
+test_all_utterances_are_included()
