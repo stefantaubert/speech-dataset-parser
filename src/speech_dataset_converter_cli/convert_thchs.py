@@ -47,17 +47,57 @@ def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> boo
 QUESTION_PARTICLE_1 = '吗'
 QUESTION_PARTICLE_2 = '呢'
 
-# MALE_SPEAKERS = {"A8", "A9", "A33", "A35", "B8", "B21", "B34", "C8", "D8"}
-MALE_SPEAKERS = {"8", "9", "21", "33", "34", "35"}
 
-# ACCENTS = {
-#   "D4": "Mandarin",  # Standard Mandarin
-#   "D6": "Mandarin",  # Standard Mandarin
-# }
+GROUPS = {
+  "A2": "ABC2",
+  "B2": "ABC2",
+  "C2": "ABC2",
+
+  "A4": "ABCD4",
+  "B4": "ABCD4",
+  "C4": "ABCD4",
+  "D4": "ABCD4",
+
+  "A6": "ABCD6",
+  "B6": "ABCD6",
+  "C6": "ABCD6",
+  "D6": "ABCD6",
+
+  "A7": "ABCD7",
+  "B7": "ABCD7",
+  "C7": "ABCD7",
+  "D7": "ABCD7",
+
+  "A8": "ABCD8",
+  "B8": "ABCD8",
+  "C8": "ABCD8",
+  "D8": "ABCD8",
+
+  "A11": "ABD11",
+  "B11": "ABD11",
+  "D11": "ABD11",
+
+  "A23": "AC23",
+  "C23": "AC23",
+
+  "A13": "A13C12",
+  "C12": "A13C12",
+
+  "A19": "A19B15",
+  "B15": "A19B15",
+
+  "A22": "A22C21",
+  "C21": "A22C21",
+
+  "A32": "A32C31",
+  "C31": "A32C31",
+}
+
+MALE_SPEAKERS = {"A9", "A33", "A35", "B21", "B34", "ABCD8"}
 
 ACCENTS = {
-  "4": "Mandarin",  # Standard Mandarin
-  "6": "Mandarin",  # Standard Mandarin
+  "ABCD4": "Mandarin",  # Standard Mandarin
+  "ABCD6": "Mandarin",  # Standard Mandarin
 }
 
 
@@ -93,18 +133,19 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       pos = line.find(' ')
       try:
         name, chinese = line[:pos], line[pos + 1:]
-        speaker_name_part, audio_nr = name.split("_")
+        speaker_name, audio_nr = name.split("_")
       except Exception as ex:
         flogger.error(
           f"Line {line_nr}: '{line}' in file \"{words_path.absolute()}\" couldn't be parsed! Ignored.")
         lines_with_errors += 1
       # nr = int(nr)
-      speaker_name_letter = speaker_name_part[0]
-      speaker_name_number = int(speaker_name_part[1:])
-      speaker_gender = GENDER_MALE if speaker_name_number in MALE_SPEAKERS else GENDER_FEMALE
-      wav_file_in = wavs_dir / speaker_name_part / f"{name}.wav"
+      speaker_name_new = GROUPS.get(speaker_name, speaker_name)
+      # speaker_name_letter = speaker_name_part[0]
+      # speaker_name_number = int(speaker_name_part[1:])
+      speaker_gender = GENDER_MALE if speaker_name_new in MALE_SPEAKERS else GENDER_FEMALE
+      wav_file_in = wavs_dir / speaker_name / f"{name}.wav"
       if not wav_file_in.exists():
-        wav_file_in = wavs_dir / speaker_name_part / f"{name}.WAV"
+        wav_file_in = wavs_dir / speaker_name / f"{name}.WAV"
       if not wav_file_in.exists():
         logger.info(f"Did not found wav file: \"{wav_file_in.absolute()}\"! Skipped.")
         lines_with_errors += 1
@@ -123,9 +164,9 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       else:
         chinese += "。"
 
-      speaker_dir_name = f"{speaker_name_number}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{lang}"
-      if speaker_name_number in ACCENTS.keys():
-        accent_name = ACCENTS[speaker_name_number]
+      speaker_dir_name = f"{speaker_name_new}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{lang}"
+      if speaker_name_new in ACCENTS:
+        accent_name = ACCENTS[speaker_name_new]
         speaker_dir_name += f"{PARTS_SEP}{accent_name}"
       speaker_dir_out_abs = output_directory / speaker_dir_name
 
