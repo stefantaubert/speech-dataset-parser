@@ -47,7 +47,6 @@ def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> boo
 QUESTION_PARTICLE_1 = '吗'
 QUESTION_PARTICLE_2 = '呢'
 
-
 GROUPS = {
   "A2": "ABC2",
   "B2": "ABC2",
