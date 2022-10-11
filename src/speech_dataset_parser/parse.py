@@ -79,6 +79,7 @@ def parse_dataset(directory: Path, tier_name: str = DEFAULT_TIER_NAME, n_digits:
       tier = cast(Optional[IntervalTier], grid.getFirst(tier_name))
       if tier is None:
         logger.warning(f"{str(grid_file_rel)}: Tier '{tier_name}' does not exist! Ignored.")
+        continue
       symbols = (interval.mark for interval in cast(Iterable[Interval], tier.intervals))
       symbols = tuple(symbol if symbol is not None else "" for symbol in symbols)
       intervals = tuple(interval.maxTime for interval in cast(Iterable[Interval], tier.intervals))
