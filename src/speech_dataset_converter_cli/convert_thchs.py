@@ -30,16 +30,18 @@ def get_convert_thchs_to_generic_parser(parser: ArgumentParser):
                       help="number of digits in textgrid", default=DEFAULT_N_DIGITS)
   parser.add_argument("-s", "--symlink", action="store_true",
                       help="create symbolic links to the audio files instead of copies")
+  parser.add_argument("-g", "--group", action="store_true", help="try to group same speakers")
   return convert_to_generic_ns
 
 
 def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> bool:
   if ns.output_directory == ns.directory:
-    logger.error("Parameter 'directory' and 'output_directory': The two directories need to be distinct!")
+    logger.error(
+      "Parameter 'THCHS-DIRECTORY' and 'OUTPUT-DIRECTORY': The two directories need to be distinct!")
     return False
 
   successful = convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
-                                  ns.tier, ns.output_directory, ns.encoding, flogger, logger)
+                                  ns.tier, ns.group, ns.output_directory, ns.encoding, flogger, logger)
 
   return successful
 
@@ -92,15 +94,21 @@ GROUPS = {
   "C31": "A32C31",
 }
 
-MALE_SPEAKERS = {"A9", "A33", "A35", "B21", "B34", "ABCD8"}
+MALE_SPEAKERS = {"A9", "A33", "A35", "B21", "B34", "A8", "B8", "C8", "D8"}
 
 ACCENTS = {
-  "ABCD4": "Mandarin",  # Standard Mandarin
-  "ABCD6": "Mandarin",  # Standard Mandarin
+  "A4": "Mandarin",
+  "B4": "Mandarin",
+  "C4": "Mandarin",
+  "D4": "Mandarin",
+  "A6": "Mandarin",
+  "B6": "Mandarin",
+  "C6": "Mandarin",
+  "D6": "Mandarin",
 }
 
 
-def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, output_directory: Path, encoding: str, flogger: Logger, logger: Logger) -> bool:
+def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, group: bool, output_directory: Path, encoding: str, flogger: Logger, logger: Logger) -> bool:
 
   train_words = directory / 'doc/trans/train.word.txt'
   test_words = directory / 'doc/trans/test.word.txt'
@@ -138,10 +146,13 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
           f"Line {line_nr}: '{line}' in file \"{words_path.absolute()}\" couldn't be parsed! Ignored.")
         lines_with_errors += 1
       # nr = int(nr)
-      speaker_name_new = GROUPS.get(speaker_name, speaker_name)
+      if group:
+        speaker_name_new = GROUPS.get(speaker_name, speaker_name)
+      else:
+        speaker_name_new = speaker_name
       # speaker_name_letter = speaker_name_part[0]
       # speaker_name_number = int(speaker_name_part[1:])
-      speaker_gender = GENDER_MALE if speaker_name_new in MALE_SPEAKERS else GENDER_FEMALE
+      speaker_gender = GENDER_MALE if speaker_name in MALE_SPEAKERS else GENDER_FEMALE
       wav_file_in = wavs_dir / speaker_name / f"{name}.wav"
       if not wav_file_in.exists():
         wav_file_in = wavs_dir / speaker_name / f"{name}.WAV"
@@ -165,7 +176,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
 
       speaker_dir_name = f"{speaker_name_new}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{lang}"
       if speaker_name_new in ACCENTS:
-        accent_name = ACCENTS[speaker_name_new]
+        accent_name = ACCENTS[speaker_name]
         speaker_dir_name += f"{PARTS_SEP}{accent_name}"
       speaker_dir_out_abs = output_directory / speaker_dir_name
 
