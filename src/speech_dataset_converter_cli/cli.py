@@ -17,6 +17,7 @@ from speech_dataset_converter_cli.logging_configuration import (configure_root_l
                                                                 get_file_logger,
                                                                 init_and_return_loggers,
                                                                 try_init_file_logger)
+from speech_dataset_converter_cli.restore_directory_structure import get_structure_restoring_parser
 
 
 def get_version() -> str:
@@ -47,6 +48,7 @@ def get_parsers() -> Parsers:
   yield "convert-ljs", "convert LJ Speech dataset to a generic dataset", get_convert_ljs_to_generic_parser
   yield "convert-l2arctic", "convert L2-ARCTIC dataset to a generic dataset", get_convert_l2arctic_to_generic_parser
   yield "convert-thchs", "convert THCHS-30 dataset to a generic dataset", get_convert_thchs_to_generic_parser
+  yield "restore-structure", "restore original dataset structure of generic datasets", get_structure_restoring_parser
 
 
 def print_features():

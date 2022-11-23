@@ -1,5 +1,7 @@
 import codecs
+import json
 from argparse import ArgumentParser, Namespace
+from collections import OrderedDict
 from logging import Logger
 from pathlib import Path
 from shutil import copy2
@@ -48,6 +50,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   accent_name = "North American"
   language = "eng"
   gender = GENDER_FEMALE
+
+  file_name_mapping = OrderedDict()
 
   speaker_dir_name = f"{speaker_name}{PARTS_SEP}{gender}{PARTS_SEP}{language}{PARTS_SEP}{accent_name}"
   speaker_dir_out_abs = output_directory / speaker_dir_name
@@ -142,8 +146,25 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         lines_with_errors += 1
         continue
 
+    hypothetical_grid_file_in = wav_file_in.parent / f"{wav_file_in.stem}.TextGrid"
+    file_name_mapping[str(grid_file_out.relative_to(
+      output_directory))] = str(hypothetical_grid_file_in.relative_to(directory))
+    file_name_mapping[str(wav_file_out.relative_to(
+      output_directory))] = str(wav_file_in.relative_to(directory))
+
   if lines_with_errors > 0:
     logger.warning(f"{lines_with_errors} lines couldn't be parsed!")
 
   all_successful = lines_with_errors == 0
+
+  file_name_mapping_json_path = output_directory / "filename-mapping.json"
+  try:
+    with open(file_name_mapping_json_path, mode="w", encoding="UTF-8") as f:
+      json.dump(file_name_mapping, f, indent=2)
+  except Exception as ex:
+    flogger.debug(ex)
+    flogger.error(
+      f"Mapping file \"{file_name_mapping_json_path.absolute()}\" couldn't be written!")
+    all_successful = False
+
   return all_successful
