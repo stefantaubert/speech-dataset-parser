@@ -50,6 +50,7 @@ def restore_structure(directory: Path, symlink: bool, output_directory: Path, fl
       f"Mapping file \"{file_name_mapping_json_path.absolute()}\" couldn't be read!")
     return False
 
+  lines_with_errors = 0
   for from_path_rel, to_path_rel in tqdm(file_name_mapping.items()):
     from_path = directory / from_path_rel
     to_path = output_directory / to_path_rel
@@ -65,11 +66,11 @@ def restore_structure(directory: Path, symlink: bool, output_directory: Path, fl
 
     if symlink:
       try:
-        from_path.symlink_to(to_path)
+        to_path.symlink_to(from_path)
       except Exception as ex:
         flogger.debug(ex)
         flogger.error(
-          f"Symbolic link to file \"{to_path.absolute()}\" at \"{from_path.absolute()}\" couldn't be created! Ignored.")
+          f"Symbolic link to file \"{from_path.absolute()}\" at \"{to_path.absolute()}\" couldn't be created! Ignored.")
         lines_with_errors += 1
         continue
     else:
