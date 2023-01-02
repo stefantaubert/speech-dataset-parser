@@ -65,4 +65,3 @@ def test_parse_thchs_from_local_path():
   assert len(first_entry.symbols) == 50
   assert first_entry.intervals[:3] == (0.156, 0.312, 0.468)
   assert first_entry.symbols[:6] == ('绿', ' ', '是', ' ', '阳', '春')
-

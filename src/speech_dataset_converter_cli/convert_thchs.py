@@ -1,5 +1,7 @@
 import codecs
+import json
 from argparse import ArgumentParser, Namespace
+from collections import OrderedDict
 from logging import Logger
 from pathlib import Path
 from shutil import copy2
@@ -31,6 +33,8 @@ def get_convert_thchs_to_generic_parser(parser: ArgumentParser):
   parser.add_argument("-s", "--symlink", action="store_true",
                       help="create symbolic links to the audio files instead of copies")
   parser.add_argument("-g", "--group", action="store_true", help="try to group same speakers")
+  parser.add_argument("-p", "--add-punctuation-marks", action="store_true",
+                      help="add question marks (？) after particles 吗, 呢 and 吧, otherwise add a dot (。)")
   return convert_to_generic_ns
 
 
@@ -41,13 +45,15 @@ def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> boo
     return False
 
   successful = convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
-                                  ns.tier, ns.group, ns.output_directory, ns.encoding, flogger, logger)
+                                  ns.tier, ns.group, ns.output_directory, ns.encoding, ns.add_punctuation_marks, flogger, logger)
 
   return successful
 
 
 QUESTION_PARTICLE_1 = '吗'
 QUESTION_PARTICLE_2 = '呢'
+# doesn't occur
+QUESTION_PARTICLE_3 = '吧'
 
 GROUPS = {
   "A2": "ABC2",
@@ -108,7 +114,8 @@ ACCENTS = {
 }
 
 
-def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, group: bool, output_directory: Path, encoding: str, flogger: Logger, logger: Logger) -> bool:
+def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, group: bool, output_directory: Path, encoding: str, add_punctuation: bool, flogger: Logger, logger: Logger) -> bool:
+  file_name_mapping = OrderedDict()
 
   train_words = directory / 'doc/trans/train.word.txt'
   test_words = directory / 'doc/trans/test.word.txt'
@@ -142,6 +149,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         name, chinese = line[:pos], line[pos + 1:]
         speaker_name, audio_nr = name.split("_")
       except Exception as ex:
+        flogger.debug(ex)
         flogger.error(
           f"Line {line_nr}: '{line}' in file \"{words_path.absolute()}\" couldn't be parsed! Ignored.")
         lines_with_errors += 1
@@ -167,12 +175,14 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       # 徐 希君 肖 金生 刘 文华 屈 永利 王开 宇 骆 瑛 等 也 被 分别 判处 l = 六年 至 十 五年 有期徒刑
       # occurs only in sentences with nr. 374, e.g. B22_374
       chinese = chinese.replace(" l = ", " ")
-      is_question = str.endswith(chinese, QUESTION_PARTICLE_1) or str.endswith(
-        chinese, QUESTION_PARTICLE_2)
-      if is_question:
-        chinese += "？"
-      else:
-        chinese += "。"
+      if add_punctuation:
+        is_question = str.endswith(chinese, QUESTION_PARTICLE_1) or str.endswith(
+          chinese, QUESTION_PARTICLE_2) or str.endswith(
+          chinese, QUESTION_PARTICLE_3)
+        if is_question:
+          chinese += "？"
+        else:
+          chinese += "。"
 
       speaker_dir_name = f"{speaker_name_new}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{lang}"
       if speaker_name_new in ACCENTS:
@@ -228,9 +238,26 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
           lines_with_errors += 1
           continue
 
+      hypothetical_grid_file_in = wav_file_in.parent / f"{wav_file_in.stem}.TextGrid"
+      file_name_mapping[str(grid_file_out.relative_to(
+        output_directory))] = str(hypothetical_grid_file_in.relative_to(directory))
+      file_name_mapping[str(wav_file_out.relative_to(
+        output_directory))] = str(wav_file_in.relative_to(directory))
+
   if lines_with_errors > 0:
     logger.warning(f"{lines_with_errors} lines couldn't be parsed!")
 
   all_successful = lines_with_errors == 0
+
+  file_name_mapping_json_path = output_directory / "filename-mapping.json"
+  try:
+    with open(file_name_mapping_json_path, mode="w", encoding="UTF-8") as f:
+      json.dump(file_name_mapping, f, indent=2)
+  except Exception as ex:
+    flogger.debug(ex)
+    flogger.error(
+      f"Mapping file \"{file_name_mapping_json_path.absolute()}\" couldn't be written!")
+    all_successful = False
+
   logger.info(f"Saved output to: '{output_directory.absolute()}'.")
   return all_successful

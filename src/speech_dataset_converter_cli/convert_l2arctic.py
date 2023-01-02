@@ -35,7 +35,7 @@ def get_convert_l2arctic_to_generic_parser(parser: ArgumentParser):
 
 def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> bool:
   if ns.output_directory == ns.directory:
-    logger.error("Parameter 'directory' and 'output_directory': The two directories need to be distinct!")
+    logger.error("Parameter 'L2-ARCTIC-DIRECTORY' and 'OUTPUT-DIRECTORY': The two directories need to be distinct!")
     return False
 
   successful = convert_to_generic(ns.directory, ns.symlink, ns.n_digits,

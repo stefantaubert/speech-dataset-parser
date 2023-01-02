@@ -60,7 +60,7 @@ def print_features():
 def _init_parser():
   main_parser = ArgumentParser(
     formatter_class=formatter,
-    description="This program converts common datasets into a generic representation.",
+    description="This program converts common speech datasets into a generic representation.",
   )
   main_parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
   subparsers = main_parser.add_subparsers(help="description")

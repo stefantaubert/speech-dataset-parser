@@ -13,18 +13,18 @@ from speech_dataset_converter_cli.argparse_helper import (parse_existing_directo
 
 def get_structure_restoring_parser(parser: ArgumentParser):
   parser.description = "This command restores the original structure."
-  parser.add_argument("directory", type=parse_existing_directory, metavar="LJ-SPEECH-DIRECTORY",
-                      help="directory containing the LJSpeech content")
+  parser.add_argument("directory", type=parse_existing_directory, metavar="DIRECTORY",
+                      help="directory containing the generic dataset")
   parser.add_argument("output_directory", type=parse_non_existing_directory, metavar="OUTPUT-DIRECTORY",
                       help="output directory")
   parser.add_argument("-s", "--symlink", action="store_true",
-                      help="create symbolic links to the audio files instead of copies")
+                      help="create symbolic links to the files instead of copies")
   return restore_structure_ns
 
 
 def restore_structure_ns(ns: Namespace, flogger: Logger, logger: Logger) -> bool:
   if ns.output_directory == ns.directory:
-    logger.error("Parameter 'directory' and 'output_directory': The two directories need to be distinct!")
+    logger.error("Parameter 'DIRECTORY' and 'OUTPUT-DIRECTORY': The two directories need to be distinct!")
     return False
 
   successful = restore_structure(ns.directory, ns.symlink, ns.output_directory, flogger, logger)
