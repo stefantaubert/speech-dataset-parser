@@ -117,6 +117,9 @@ ACCENTS = {
 def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, group: bool, output_directory: Path, encoding: str, add_punctuation: bool, flogger: Logger, logger: Logger) -> bool:
   file_name_mapping = OrderedDict()
 
+  max_file_count = 4 * 250 if group else 250
+  z_fill = len(str(max_file_count))
+
   train_words = directory / 'doc/trans/train.word.txt'
   test_words = directory / 'doc/trans/test.word.txt'
   train_wavs = directory / 'wav/train/'
@@ -130,9 +133,10 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   lang = "chi"
   lines_with_errors = 0
 
+  file_counters = {}
+
   logger.info("Parsing files...")
   for words_path, wavs_dir in parse_paths:
-
     try:
       words_content = words_path.read_text("UTF-8")
     except Exception as ex:
@@ -158,6 +162,10 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         speaker_name_new = GROUPS.get(speaker_name, speaker_name)
       else:
         speaker_name_new = speaker_name
+
+      if speaker_name_new not in file_counters:
+        file_counters[speaker_name_new] = 1
+
       # speaker_name_letter = speaker_name_part[0]
       # speaker_name_number = int(speaker_name_part[1:])
       speaker_gender = GENDER_MALE if speaker_name in MALE_SPEAKERS else GENDER_FEMALE
@@ -190,8 +198,10 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         speaker_dir_name += f"{PARTS_SEP}{accent_name}"
       speaker_dir_out_abs = output_directory / speaker_dir_name
 
-      wav_file_out = speaker_dir_out_abs / f"{wav_file_in.stem}.wav"
-      grid_file_out = speaker_dir_out_abs / f"{wav_file_in.stem}.TextGrid"
+      file_stem = str(file_counters[speaker_name_new]).zfill(z_fill)
+      wav_file_out = speaker_dir_out_abs / f"{file_stem}.wav"
+      grid_file_out = speaker_dir_out_abs / f"{file_stem}.TextGrid"
+      file_counters[speaker_name_new] += 1
 
       try:
         grid = create_grid(wav_file_in, chinese, tier, n_digits)
