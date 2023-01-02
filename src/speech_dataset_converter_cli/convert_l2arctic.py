@@ -1,5 +1,7 @@
 import codecs
+import json
 from argparse import ArgumentParser, Namespace
+from collections import OrderedDict
 from logging import Logger
 from pathlib import Path
 from shutil import copy2
@@ -35,7 +37,8 @@ def get_convert_l2arctic_to_generic_parser(parser: ArgumentParser):
 
 def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> bool:
   if ns.output_directory == ns.directory:
-    logger.error("Parameter 'L2-ARCTIC-DIRECTORY' and 'OUTPUT-DIRECTORY': The two directories need to be distinct!")
+    logger.error(
+      "Parameter 'L2-ARCTIC-DIRECTORY' and 'OUTPUT-DIRECTORY': The two directories need to be distinct!")
     return False
 
   successful = convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
@@ -58,6 +61,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   #speaker_folders = get_subfolders(directory)
 
   lines_with_errors = 0
+  file_name_mapping = OrderedDict()
 
   # strip last empty line
   readme_lines = readme.splitlines()
@@ -156,9 +160,26 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
           lines_with_errors += 1
           continue
 
+      hypothetical_grid_file_in = wav_file_in.parent / f"{wav_file_in.stem}.TextGrid"
+      file_name_mapping[str(grid_file_out.relative_to(
+        output_directory))] = str(hypothetical_grid_file_in.relative_to(directory))
+      file_name_mapping[str(wav_file_out.relative_to(
+        output_directory))] = str(wav_file_in.relative_to(directory))
+
   if lines_with_errors > 0:
     logger.warning(f"{lines_with_errors} lines couldn't be parsed!")
 
   all_successful = lines_with_errors == 0
-  logger.info(f"Saved output to: '{output_directory.absolute()}'.")
+
+  file_name_mapping_json_path = output_directory / "filename-mapping.json"
+  try:
+    with open(file_name_mapping_json_path, mode="w", encoding="UTF-8") as f:
+      json.dump(file_name_mapping, f, indent=2)
+  except Exception as ex:
+    flogger.debug(ex)
+    flogger.error(
+      f"Mapping file \"{file_name_mapping_json_path.absolute()}\" couldn't be written!")
+    all_successful = False
+
+  logger.info(f"Saved output to: \"{output_directory.absolute()}\".")
   return all_successful

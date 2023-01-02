@@ -259,5 +259,5 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       f"Mapping file \"{file_name_mapping_json_path.absolute()}\" couldn't be written!")
     all_successful = False
 
-  logger.info(f"Saved output to: '{output_directory.absolute()}'.")
+  logger.info(f"Saved output to: \"{output_directory.absolute()}\".")
   return all_successful
