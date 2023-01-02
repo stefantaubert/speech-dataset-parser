@@ -36,7 +36,8 @@ def get_convert_ljs_to_generic_parser(parser: ArgumentParser):
 
 def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> bool:
   if ns.output_directory == ns.directory:
-    logger.error("Parameter 'LJ-SPEECH-DIRECTORY' and 'OUTPUT-DIRECTORY': The two directories need to be distinct!")
+    logger.error(
+      "Parameter 'LJ-SPEECH-DIRECTORY' and 'OUTPUT-DIRECTORY': The two directories need to be distinct!")
     return False
 
   successful = convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
@@ -50,6 +51,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   accent_name = "North American"
   language = "eng"
   gender = GENDER_FEMALE
+  file_count = 13100
+  z_fill = len(str(file_count))
 
   file_name_mapping = OrderedDict()
 
@@ -68,6 +71,8 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
 
   lines_with_errors = 0
 
+  file_counter = 1
+  
   # strip last empty line
   lines = metadata_content.strip().splitlines()
   for line_nr, line in enumerate(tqdm(lines, desc="Converting", unit=" file(s)"), start=1):
@@ -98,8 +103,10 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     assert wav_file_in.is_file()
 
     stem_out = f"{speaker_dir_name};{wav_file_relative.stem}"
+    stem_out = str(file_counter).zfill(z_fill)
     wav_file_out = speaker_dir_out_abs / f"{stem_out}.wav"
     grid_file_out = speaker_dir_out_abs / f"{stem_out}.TextGrid"
+    file_counter += 1
 
     try:
       grid = create_grid(wav_file_in, text, tier, n_digits)
@@ -166,7 +173,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     flogger.error(
       f"Mapping file \"{file_name_mapping_json_path.absolute()}\" couldn't be written!")
     all_successful = False
-    
+
   logger.info(f"Saved output to: \"{output_directory.absolute()}\".")
 
   return all_successful
