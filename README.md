@@ -6,6 +6,7 @@
 [![PyPI](https://img.shields.io/pypi/wheel/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
 [![PyPI](https://img.shields.io/pypi/implementation/speech-dataset-parser.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
 [![PyPI](https://img.shields.io/github/commits-since/stefantaubert/speech-dataset-parser/latest/master.svg)](https://pypi.python.org/pypi/speech-dataset-parser)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7498984.svg)](https://doi.org/10.5281/zenodo.7498984)
 
 Library to parse speech datasets stored in a generic format based on TextGrids. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included.
 Speech datasets consists of pairs of .TextGrid and .wav files. The TextGrids need to contain a tier which has each symbol separated in an interval, e.g., `T|h|i|s| |i|s| |a| |t|e|x|t|.`
@@ -32,25 +33,25 @@ pip install speech-dataset-parser --user
 ```py
 from speech_dataset_parser import parse_dataset
 
-entries = list(parse_dataset(folder..., grid-tier-name...))
+entries = list(parse_dataset({folder}, {grid-tier-name}))
 ```
 
-The resulting `entries` list contains dataclass instances with these properties:
+The resulting `entries` list contains dataclass-instances with these properties:
 
-- `symbols: Tuple[str, ...]`
-- `intervals: Tuple[float, ...]`
-- `symbols_language: str`
-- `speaker_name: str`
-- `speaker_accent: str`
-- `speaker_gender: int`
-- `audio_file_abs: Path`
-- `min_time: float`
-- `max_time: float`
+- `symbols: Tuple[str, ...]`: contains the mark of each interval
+- `intervals: Tuple[float, ...]`: contains the max-time of each interval
+- `symbols_language: str`: contains the language
+- `speaker_name: str`: contains the name of the speaker
+- `speaker_accent: str`: contains the accent of the speaker
+- `speaker_gender: int`: contains the gender of the speaker
+- `audio_file_abs: Path`: contains the absolute path to the speech audio
+- `min_time: float`: the min-time of the grid
+- `max_time: float`: the max-time of the grid (equal to `intervals[-1]`)
 
 ## CLI Usage
 
 ```sh
-dataset-converter-cli [-h] [-v] {convert-ljs,convert-l2arctic,convert-thchs} ...
+dataset-converter-cli [-h] [-v] {convert-ljs,convert-l2arctic,convert-thchs,restore-structure} ...
 ```
 
 ## CLI Features
@@ -58,6 +59,7 @@ dataset-converter-cli [-h] [-v] {convert-ljs,convert-l2arctic,convert-thchs} ...
 - `convert-ljs`: convert LJ Speech dataset to a generic dataset
 - `convert-l2arctic`: convert L2-ARCTIC dataset to a generic dataset
 - `convert-thchs`: convert THCHS-30 dataset to a generic dataset
+- `restore-structure`: restore original dataset structure of generic datasets
 
 ## CLI Example
 
@@ -75,11 +77,61 @@ dataset-converter-cli convert-ljs \
 - `tqdm`
 - `TextGrid>=1.5`
 - `ordered_set>=4.1.0`
+- `importlib_resources; python_version < '3.8'`
 
 ## Roadmap
 
 - Supporting conversion of more datasets
 - Adding more tests
+
+## Contributing
+
+If you notice an error, please don't hesitate to open an issue.
+
+### Development setup
+
+```sh
+# update
+sudo apt update
+# install Python 3.7, 3.8, 3.9, 3.10 & 3.11 for ensuring that tests can be run
+sudo apt install python3-pip \
+  python3.7 python3.7-dev python3.7-distutils python3.7-venv \
+  python3.8 python3.8-dev python3.8-distutils python3.8-venv \
+  python3.9 python3.9-dev python3.9-distutils python3.9-venv \
+  python3.10 python3.10-dev python3.10-distutils python3.10-venv \
+  python3.11 python3.11-dev python3.11-distutils python3.11-venv
+# install pipenv for creation of virtual environments
+python3.8 -m pip install pipenv --user
+
+# check out repo
+git clone https://github.com/stefantaubert/speech-dataset-parser.git
+cd speech-dataset-parser
+# create virtual environment
+python3.8 -m pipenv install --dev
+```
+
+## Running the tests
+
+```sh
+# first install the tool like in "Development setup"
+# then, navigate into the directory of the repo (if not already done)
+cd speech-dataset-parser
+# activate environment
+python3.8 -m pipenv shell
+# run tests
+tox
+```
+
+Final lines of test result output:
+
+```log
+  py37: commands succeeded
+  py38: commands succeeded
+  py39: commands succeeded
+  py310: commands succeeded
+  py311: commands succeeded
+  congratulations :)
+```
 
 ## License
 
