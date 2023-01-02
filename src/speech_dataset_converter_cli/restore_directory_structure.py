@@ -1,7 +1,5 @@
-import codecs
 import json
 from argparse import ArgumentParser, Namespace
-from collections import OrderedDict
 from logging import Logger
 from pathlib import Path
 from shutil import copy2
@@ -9,13 +7,8 @@ from typing import Dict
 
 from tqdm import tqdm
 
-from speech_dataset_converter_cli.argparse_helper import (parse_codec, parse_existing_directory,
-                                                          parse_non_empty_or_whitespace,
+from speech_dataset_converter_cli.argparse_helper import (parse_existing_directory,
                                                           parse_non_existing_directory)
-from speech_dataset_converter_cli.utils import create_grid
-from speech_dataset_parser import GENDER_FEMALE
-from speech_dataset_parser.parse import (DEFAULT_ENCODING, DEFAULT_N_DIGITS, DEFAULT_TIER_NAME,
-                                         PARTS_SEP)
 
 
 def get_structure_restoring_parser(parser: ArgumentParser):

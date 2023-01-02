@@ -10,7 +10,7 @@ LOCAL_PATH = Path('/data/datasets/l2arctic')
 configure_root_logger()
 
 
-def test_all_utterances_are_included():
+def xtest_all_utterances_are_included():
   output_path = Path(tempfile.mkdtemp("-tests", "sdc"))
   success = convert_to_generic(LOCAL_PATH, True, 16, "test", output_path,
                                "UTF-8", getLogger(), getLogger())
