@@ -72,7 +72,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   lines_with_errors = 0
 
   file_counter = 1
-  
+
   # strip last empty line
   lines = metadata_content.strip().splitlines()
   for line_nr, line in enumerate(tqdm(lines, desc="Converting", unit=" file(s)"), start=1):
@@ -102,7 +102,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
     wav_file_in = directory / wav_file_relative
     assert wav_file_in.is_file()
 
-    stem_out = f"{speaker_dir_name};{wav_file_relative.stem}"
+    # stem_out = f"{speaker_dir_name};{wav_file_relative.stem}"
     stem_out = str(file_counter).zfill(z_fill)
     wav_file_out = speaker_dir_out_abs / f"{stem_out}.wav"
     grid_file_out = speaker_dir_out_abs / f"{stem_out}.TextGrid"

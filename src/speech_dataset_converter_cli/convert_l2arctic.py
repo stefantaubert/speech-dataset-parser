@@ -82,18 +82,21 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       lines_with_errors += 1
       continue
 
-    name, gender, accent, _, _ = parts
+    speaker_name, gender, speaker_accent, _, _ = parts
     speaker_gender = GENDER_MALE if gender == "M" else GENDER_FEMALE
-    speaker_dir = directory / name
+    speaker_dir = directory / speaker_name
     wav_dir = speaker_dir / "wav"
     txt_dir = speaker_dir / "transcript"
     txt_files = get_filenames(txt_dir)
 
-    speaker_dir_name = f"{name}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{language}{PARTS_SEP}{accent}"
+    speaker_dir_name = f"{speaker_name}{PARTS_SEP}{speaker_gender}{PARTS_SEP}{language}{PARTS_SEP}{speaker_accent}"
     speaker_dir_out_abs = output_directory / speaker_dir_name
 
+    z_fill = len(str(len(txt_files)))
+    file_counter = 1
+
     txt_file_name: str
-    for txt_file_name in tqdm(txt_files, desc=f"Converting {name} ({readme_line_nr - 34}/{len(lines)})", unit=" file(s)"):
+    for txt_file_name in tqdm(txt_files, desc=f"Converting {speaker_name} ({readme_line_nr - 34}/{len(lines)})", unit=" file(s)"):
       stem_in = Path(txt_file_name).stem
       txt_file = txt_dir / f"{stem_in}.txt"
       wav_file_in = wav_dir / f"{stem_in}.wav"
@@ -101,9 +104,11 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         flogger.error(f"No .wav file found for transcript '{txt_file_name}'! Ignored.")
         continue
 
-      stem_out = f"{speaker_dir_name};{stem_in}"
-      wav_file_out = speaker_dir_out_abs / f"{stem_out}.wav"
-      grid_file_out = speaker_dir_out_abs / f"{stem_out}.TextGrid"
+      # file_stem = f"{speaker_dir_name};{stem_in}"
+      file_stem = str(file_counter).zfill(z_fill)
+      wav_file_out = speaker_dir_out_abs / f"{file_stem}.wav"
+      grid_file_out = speaker_dir_out_abs / f"{file_stem}.TextGrid"
+      file_counter += 1
 
       try:
         text = txt_file.read_text("UTF-8")
