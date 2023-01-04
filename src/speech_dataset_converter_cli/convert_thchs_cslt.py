@@ -18,7 +18,7 @@ from speech_dataset_parser.parse import (DEFAULT_ENCODING, DEFAULT_N_DIGITS, DEF
 from speech_dataset_parser.types import GENDER_MALE
 
 
-def get_convert_thchs_to_generic_parser(parser: ArgumentParser):
+def get_convert_thchs_cslt_to_generic_parser(parser: ArgumentParser):
   parser.description = "This command converts the THCHS-30 dataset to a generic one."
   parser.add_argument("directory", type=parse_existing_directory, metavar="THCHS-DIRECTORY",
                       help="directory containing the THCHS-30 content")

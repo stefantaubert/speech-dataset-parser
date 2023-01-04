@@ -3,10 +3,10 @@ from logging import getLogger
 from pathlib import Path
 from shutil import rmtree
 
-from speech_dataset_converter_cli.convert_thchs_cslt import convert_to_generic
+from speech_dataset_converter_cli.convert_thchs_slr import convert_to_generic
 from speech_dataset_converter_cli.logging_configuration import configure_root_logger
 
-LOCAL_PATH = Path('/data/datasets/thchs/thchs_wav')
+LOCAL_PATH = Path('/data/datasets/thchs/THCHS-30')
 configure_root_logger()
 
 

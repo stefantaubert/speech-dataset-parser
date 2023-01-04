@@ -12,7 +12,8 @@ from typing import Callable, Generator, List, Tuple
 from speech_dataset_converter_cli.argparse_helper import get_optional, parse_path
 from speech_dataset_converter_cli.convert_l2arctic import get_convert_l2arctic_to_generic_parser
 from speech_dataset_converter_cli.convert_ljs import get_convert_ljs_to_generic_parser
-from speech_dataset_converter_cli.convert_thchs import get_convert_thchs_to_generic_parser
+from speech_dataset_converter_cli.convert_thchs_cslt import get_convert_thchs_cslt_to_generic_parser
+from speech_dataset_converter_cli.convert_thchs_slr import get_convert_thchs_slr_to_generic_parser
 from speech_dataset_converter_cli.logging_configuration import (configure_root_logger,
                                                                 get_file_logger,
                                                                 init_and_return_loggers,
@@ -47,7 +48,8 @@ def formatter(prog):
 def get_parsers() -> Parsers:
   yield "convert-ljs", "convert LJ Speech dataset to a generic dataset", get_convert_ljs_to_generic_parser
   yield "convert-l2arctic", "convert L2-ARCTIC dataset to a generic dataset", get_convert_l2arctic_to_generic_parser
-  yield "convert-thchs", "convert THCHS-30 dataset to a generic dataset", get_convert_thchs_to_generic_parser
+  yield "convert-thchs", "convert THCHS-30 (OpenSLR Version) dataset to a generic dataset", get_convert_thchs_slr_to_generic_parser
+  yield "convert-thchs-cslt", "convert THCHS-30 (CSLT Version) dataset to a generic dataset", get_convert_thchs_cslt_to_generic_parser
   yield "restore-structure", "restore original dataset structure of generic datasets", get_structure_restoring_parser
 
 
