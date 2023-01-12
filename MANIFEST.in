@@ -1,5 +1,7 @@
 prune src/speech_dataset_parser_old/
 prune src/speech_dataset_parser_old_tests/
+prune speech_dataset_parser_cli_tests/
+prune speech_dataset_parser_tests/
 exclude deploy.sh
 exclude playground.sh
 exclude pylintrc
