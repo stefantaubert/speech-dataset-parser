@@ -54,8 +54,8 @@ dataset-converter-cli = "speech_dataset_converter_cli.cli:run_prod"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = [
-  "speech_dataset_parser",
   "speech_dataset_converter_cli",
+  "speech_dataset_parser"
 ]
 exclude = [
   "speech_dataset_parser_tests",
@@ -112,7 +112,6 @@ isolated_build = true
 deps = 
   pytest
 commands = 
-  pytest
   dataset-converter-cli
   dataset-converter-cli -v
 """
