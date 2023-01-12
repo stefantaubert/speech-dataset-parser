@@ -1,6 +1,6 @@
 [project]
 name = "speech-dataset-parser"
-version = "0.0.3"
+version = "0.0.4"
 description = "Library to parse speech datasets stored in a generic format based on TextGrids. A tool (CLI) for converting common datasets like LJ Speech into a generic format is included."
 readme = "README.md"
 requires-python = ">=3.7, <4"
