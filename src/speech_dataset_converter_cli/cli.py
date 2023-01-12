@@ -96,9 +96,10 @@ def parse_args(args: List[str]) -> None:
 
   try:
     ns = parser.parse_args(args)
-  except SystemExit:
-    # invalid command supplied
-    return
+  except SystemExit as error:
+    error_code = error.args[0]
+    # -v -> 0; invalid arg -> 2
+    sys.exit(error_code)
 
   if hasattr(ns, INVOKE_HANDLER_VAR):
     invoke_handler: Callable[..., bool] = getattr(ns, INVOKE_HANDLER_VAR)
@@ -150,8 +151,12 @@ def parse_args(args: List[str]) -> None:
     if log_to_file:
       logger.info(f"Written log to: {ns.log.absolute()}")
 
+    if not success:
+      sys.exit(1)
+    sys.exit(0)
   else:
     parser.print_help()
+    sys.exit(0)
 
 
 def run():
