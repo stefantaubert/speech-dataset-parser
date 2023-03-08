@@ -8,6 +8,7 @@ from speech_dataset_converter_cli.logging_configuration import configure_root_lo
 
 LOCAL_PATH = Path('/data/datasets/thchs/THCHS-30')
 configure_root_logger()
+LOCAL_PATH = Path('/tmp/thchs-tts-duration/THCHS-30/data_thchs30')
 
 
 def xtest_all_utterances_are_included():

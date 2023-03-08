@@ -134,6 +134,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
   lines_with_errors = 0
 
   file_counters = {}
+  # unique_speakers = set()
 
   logger.info("Parsing files...")
   for words_path, wavs_dir in parse_paths:
@@ -167,7 +168,10 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
         file_counters[speaker_name_new] = 1
 
       # speaker_name_letter = speaker_name_part[0]
-      # speaker_name_number = int(speaker_name_part[1:])
+      # speaker_name_number = int(speaker_name[1:])
+      # ds = "TRN" if "train" in str(wavs_dir) else "TST"
+      # unique_speakers.add(f"{ds}-{speaker_name_number}")
+
       speaker_gender = GENDER_MALE if speaker_name in MALE_SPEAKERS else GENDER_FEMALE
       wav_file_in = wavs_dir / speaker_name / f"{name}.wav"
       if not wav_file_in.exists():
@@ -269,5 +273,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       f"Mapping file \"{file_name_mapping_json_path.absolute()}\" couldn't be written!")
     all_successful = False
 
+  # Speakers: TRN-11, TRN-12, TRN-13, TRN-14, TRN-15, TRN-17, TRN-18, TRN-19, TRN-2, TRN-20, TRN-21, TRN-22, TRN-23, TRN-31, TRN-32, TRN-33, TRN-34, TRN-35, TRN-36, TRN-4, TRN-5, TRN-6, TRN-7, TRN-8, TRN-9, TST-11, TST-12, TST-13, TST-21, TST-31, TST-32, TST-4, TST-6, TST-7, TST-8 #35
+  # logger.info(f"Speakers: {', '.join(sorted(unique_speakers))} #{len(unique_speakers)}")
   logger.info(f"Saved output to: \"{output_directory.absolute()}\".")
   return all_successful
