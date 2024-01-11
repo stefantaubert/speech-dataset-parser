@@ -31,6 +31,8 @@ def get_convert_ljs_to_generic_parser(parser: ArgumentParser):
                       help="number of digits in textgrid", default=DEFAULT_N_DIGITS)
   parser.add_argument("-s", "--symlink", action="store_true",
                       help="create symbolic links to the audio files instead of copies")
+  parser.add_argument("--use-un-normalized-text", action="store_true",
+                      help="use un-normalized text, e.g., '1469, 1470;' instead of 'fourteen sixty-nine, fourteen seventy;'")
   return convert_to_generic_ns
 
 
@@ -41,12 +43,12 @@ def convert_to_generic_ns(ns: Namespace, flogger: Logger, logger: Logger) -> boo
     return False
 
   successful = convert_to_generic(ns.directory, ns.symlink, ns.n_digits,
-                                  ns.tier, ns.output_directory, ns.encoding, flogger, logger)
+                                  ns.tier, ns.output_directory, ns.encoding, ns.use_un_normalized_text, flogger, logger)
 
   return successful
 
 
-def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, output_directory: Path, encoding: str, flogger: Logger, logger: Logger) -> bool:
+def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str, output_directory: Path, encoding: str, use_un_normalized_text: bool, flogger: Logger, logger: Logger) -> bool:
   speaker_name = 'Linda Johnson'
   accent_name = "North American"
   language = "eng"
@@ -73,6 +75,10 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
 
   file_counter = 1
 
+  text_column = 2
+  if use_un_normalized_text:
+    text_column = 1
+
   # strip last empty line
   lines = metadata_content.strip().splitlines()
   for line_nr, line in enumerate(tqdm(lines, desc="Converting", unit=" file(s)"), start=1):
@@ -90,7 +96,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
       lines_with_errors += 1
       continue
 
-    text = parts[2]
+    text = parts[text_column]
     if len(text) == 0:
       flogger.error(f"Line {line_nr}: Empty line. Ignored.")
       lines_with_errors += 1
@@ -98,7 +104,7 @@ def convert_to_generic(directory: Path, symlink: bool, n_digits: int, tier: str,
 
     wav_file_relative = wav_file_abs.relative_to(directory)
 
-    #flogger.debug(f"Processing '{str(wav_file_relative)}'...")
+    # flogger.debug(f"Processing '{str(wav_file_relative)}'...")
     wav_file_in = directory / wav_file_relative
     assert wav_file_in.is_file()
 
